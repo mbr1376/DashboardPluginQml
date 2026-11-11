@@ -72,9 +72,11 @@ qt_add_qml_module(DashboardPlugin
         qml/pages/UsersPage.qml
         qml/components/SettingsDialog.qml
         SOURCES src/dashboard/database_config.h
-        SOURCES src/dashboard/dashboard_plugin.h
-        SOURCES src/dashboard_plugin.cpp
+        SOURCES
+        SOURCES
         SOURCES src/database_config.cpp
+        SOURCES src/dashboard/dashboard_runtime.h
+        SOURCES src/dashboard_runtime.cpp
     )
 
 set_target_properties(DashboardPlugin PROPERTIES

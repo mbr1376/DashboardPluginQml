@@ -1,11 +1,8 @@
-#include <QDir>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include <QQuickStyle>
-#include <QStandardPaths>
 
-#include <dashboard/dashboard_plugin.h>
+#include <dashboard/dashboard_runtime.h>
 
 int main(int argc, char *argv[])
 {
@@ -15,25 +12,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    engine.addImportPath(QStringLiteral(DASHBOARD_QML_IMPORT_PATH));
+    DashboardRuntime dashboard;
 
-    DashboardPlugin dashboard;
-
-    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-
-    QDir().mkpath(dataPath);
-
-    QString databasePath = dataPath + "/dashboard.db";
-
-    if (!dashboard.initializeDatabase(databasePath))
-        return -1;
-
-    engine.rootContext()->setContextProperty("Dashboard", &dashboard);
+    dashboard.initialize(&engine, QCoreApplication::applicationDirPath() + "/db.sqlite");
 
     engine.loadFromModule("DashboardRestApiExample", "Main");
-
-    if (engine.rootObjects().isEmpty())
-        return -1;
 
     return app.exec();
 }

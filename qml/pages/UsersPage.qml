@@ -19,7 +19,6 @@ import Dashboard 1.0
 
 Flickable {
     id: usersPage
-    property var userModel: dashboardApi.users
     contentWidth: width
     contentHeight: contentColumn.height + 60
     clip: true
@@ -45,7 +44,7 @@ Flickable {
                 Layout.preferredHeight: 180
                 iconChar: "\u25CB"
                 title: "Total Users"
-                value: userModel.count.toString()
+                value: userModel.count().toString()
                 change: "+124"
                 positive: true
                 accentColor: Theme.accentBlue
@@ -679,10 +678,10 @@ Flickable {
             return Theme.accentBlue;
         }
     }
-    UserModel {
-        id: userModel
+    Connections {
+        target: userModel
 
-        onErrorOccurred: function (message) {
+        function onErrorOccurred(message) {
             console.error("UserModel:", message);
         }
     }
