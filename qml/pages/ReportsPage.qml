@@ -179,12 +179,15 @@ Flickable {
             }
         }
 
+
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 116
+
             radius: 14
             color: Theme.card
             border.color: Theme.border
+            border.width: 1
 
             ColumnLayout {
                 anchors.fill: parent
@@ -193,11 +196,30 @@ Flickable {
 
                 TextField {
                     id: reportTitle
+
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
+
                     placeholderText: "Report title"
                     text: "Data summary"
                     selectByMouse: true
+
+                    color: Theme.textPrimary
+                    placeholderTextColor: Theme.textSecondary
+                    selectionColor: Theme.accentBlue
+                    selectedTextColor: "#FFFFFF"
+
+                    font.pixelSize: 12
+                    font.family: Theme.fontFamily
+
+                    background: Rectangle {
+                        radius: 8
+                        color: Theme.background
+                        border.width: reportTitle.activeFocus ? 2 : 1
+                        border.color: reportTitle.activeFocus
+                                      ? Theme.accentBlue
+                                      : Theme.border
+                    }
                 }
 
                 RowLayout {
@@ -205,44 +227,337 @@ Flickable {
                     spacing: 8
 
                     ComboBox {
+                        id: groupCombo
+
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
+
                         model: root.fields
-                        currentIndex: Math.max(0, root.fields.indexOf(root.groupField))
-                        onActivated: function(index) { root.groupField = root.fields[index]; }
+                        enabled: root.fields.length > 0
+                        currentIndex: root.fields.indexOf(root.groupField)
+
+                        onActivated: function(index) {
+                            root.groupField = root.fields[index]
+                        }
+
+                        contentItem: Text {
+                            leftPadding: 10
+                            rightPadding: 28
+                            text: groupCombo.displayText
+                            color: groupCombo.enabled
+                                   ? Theme.textPrimary
+                                   : Theme.textSecondary
+                            font.pixelSize: 11
+                            font.family: Theme.fontFamily
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        indicator: Text {
+                            x: groupCombo.width - width - 10
+                            y: (groupCombo.height - height) / 2
+                            text: "⌄"
+                            color: Theme.textSecondary
+                            font.pixelSize: 16
+                        }
+
+                        background: Rectangle {
+                            radius: 8
+                            color: groupCombo.enabled
+                                   ? Theme.background : Theme.border
+                            border.width: groupCombo.activeFocus ? 2 : 1
+                            border.color: groupCombo.activeFocus
+                                          ? Theme.accentBlue
+                                          : Theme.border
+                        }
+
+                        delegate: ItemDelegate {
+                            width: groupCombo.width
+                            height: 34
+
+                            highlighted: groupCombo.highlightedIndex === index
+
+                            contentItem: Text {
+                                text: modelData
+                                color: Theme.textPrimary
+                                font.pixelSize: 11
+                                font.family: Theme.fontFamily
+                                verticalAlignment: Text.AlignVCenter
+                                elide: Text.ElideRight
+                            }
+
+                            background: Rectangle {
+                                color: parent.highlighted
+                                       ? Theme.hover : Theme.card
+                            }
+                        }
+
+                        popup: Popup {
+                            y: groupCombo.height + 4
+                            width: groupCombo.width
+                            padding: 4
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: Math.min(contentHeight, 180)
+                                model: groupCombo.popup.visible
+                                       ? groupCombo.delegateModel : null
+                                currentIndex: groupCombo.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                radius: 8
+                                color: Theme.card
+                                border.color: Theme.border
+                            }
+                        }
                     }
 
                     ComboBox {
+                        id: metricCombo
+
                         Layout.fillWidth: true
                         Layout.preferredHeight: 36
+
                         model: root.numericFields
-                        currentIndex: Math.max(0, root.numericFields.indexOf(root.metricField))
                         enabled: root.numericFields.length > 0
-                        onActivated: function(index) { root.metricField = root.numericFields[index]; }
+                        currentIndex: root.numericFields.indexOf(root.metricField)
+
+                        onActivated: function(index) {
+                            root.metricField = root.numericFields[index]
+                        }
+
+                        contentItem: Text {
+                            leftPadding: 10
+                            rightPadding: 28
+                            text: metricCombo.displayText
+                            color: metricCombo.enabled
+                                   ? Theme.textPrimary
+                                   : Theme.textSecondary
+                            font.pixelSize: 11
+                            font.family: Theme.fontFamily
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        indicator: Text {
+                            x: metricCombo.width - width - 10
+                            y: (metricCombo.height - height) / 2
+                            text: "⌄"
+                            color: Theme.textSecondary
+                            font.pixelSize: 16
+                        }
+
+                        background: Rectangle {
+                            radius: 8
+                            color: metricCombo.enabled
+                                   ? Theme.background : Theme.border
+                            border.width: metricCombo.activeFocus ? 2 : 1
+                            border.color: metricCombo.activeFocus
+                                          ? Theme.accentBlue
+                                          : Theme.border
+                        }
+
+                        delegate: ItemDelegate {
+                            width: metricCombo.width
+                            height: 34
+
+                            highlighted: metricCombo.highlightedIndex === index
+
+                            contentItem: Text {
+                                text: modelData
+                                color: Theme.textPrimary
+                                font.pixelSize: 11
+                                font.family: Theme.fontFamily
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.highlighted
+                                       ? Theme.hover : Theme.card
+                            }
+                        }
+
+                        popup: Popup {
+                            y: metricCombo.height + 4
+                            width: metricCombo.width
+                            padding: 4
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: Math.min(contentHeight, 180)
+                                model: metricCombo.popup.visible
+                                       ? metricCombo.delegateModel : null
+                                currentIndex: metricCombo.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                radius: 8
+                                color: Theme.card
+                                border.color: Theme.border
+                            }
+                        }
                     }
 
                     ComboBox {
+                        id: aggregationCombo
+
                         Layout.preferredWidth: 130
                         Layout.preferredHeight: 36
+
                         model: ["sum", "average", "count", "minimum", "maximum"]
-                        currentIndex: Math.max(0, model.indexOf(root.aggregation))
-                        onActivated: function(index) { root.aggregation = model[index]; }
+                        currentIndex: model.indexOf(root.aggregation)
+
+                        onActivated: function(index) {
+                            root.aggregation = model[index]
+                        }
+
+                        contentItem: Text {
+                            leftPadding: 10
+                            rightPadding: 28
+                            text: aggregationCombo.displayText
+                            color: Theme.textPrimary
+                            font.pixelSize: 11
+                            font.family: Theme.fontFamily
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+
+                        indicator: Text {
+                            x: aggregationCombo.width - width - 10
+                            y: (aggregationCombo.height - height) / 2
+                            text: "⌄"
+                            color: Theme.textSecondary
+                            font.pixelSize: 16
+                        }
+
+                        background: Rectangle {
+                            radius: 8
+                            color: Theme.background
+                            border.width: aggregationCombo.activeFocus ? 2 : 1
+                            border.color: aggregationCombo.activeFocus
+                                          ? Theme.accentBlue
+                                          : Theme.border
+                        }
+
+                        delegate: ItemDelegate {
+                            width: aggregationCombo.width
+                            height: 34
+
+                            highlighted: aggregationCombo.highlightedIndex === index
+
+                            contentItem: Text {
+                                text: modelData
+                                color: Theme.textPrimary
+                                font.pixelSize: 11
+                                font.family: Theme.fontFamily
+                                verticalAlignment: Text.AlignVCenter
+                            }
+
+                            background: Rectangle {
+                                color: parent.highlighted
+                                       ? Theme.hover : Theme.card
+                            }
+                        }
+
+                        popup: Popup {
+                            y: aggregationCombo.height + 4
+                            width: aggregationCombo.width
+                            padding: 4
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: Math.min(contentHeight, 180)
+                                model: aggregationCombo.popup.visible
+                                       ? aggregationCombo.delegateModel : null
+                                currentIndex: aggregationCombo.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                radius: 8
+                                color: Theme.card
+                                border.color: Theme.border
+                            }
+                        }
                     }
 
                     Button {
+                        id: generateButton
+
+                        Layout.preferredWidth: 100
+                        Layout.preferredHeight: 36
+
                         text: "Generate"
                         enabled: root.rows.length > 0
+
                         onClicked: root.generateReport()
+
+                        contentItem: Text {
+                            text: generateButton.text
+                            color: "#FFFFFF"
+                            font.pixelSize: 11
+                            font.bold: true
+                            font.family: Theme.fontFamily
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            radius: 8
+                            color: !generateButton.enabled
+                                   ? Theme.border
+                                   : generateButton.down
+                                     ? Theme.accentPurple
+                                     : generateButton.hovered
+                                       ? Theme.accentPurple
+                                       : Theme.accentBlue
+                        }
                     }
 
                     Button {
+                        id: exportButton
+
+                        Layout.preferredWidth: 105
+                        Layout.preferredHeight: 36
+
                         text: "Export CSV"
                         enabled: root.reportRows.length > 0
+
                         onClicked: root.exportReport()
+
+                        contentItem: Text {
+                            text: exportButton.text
+                            color: exportButton.enabled
+                                   ? Theme.textPrimary
+                                   : Theme.textSecondary
+                            font.pixelSize: 11
+                            font.bold: true
+                            font.family: Theme.fontFamily
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
+
+                        background: Rectangle {
+                            radius: 8
+                            color: exportButton.down
+                                   ? Theme.border
+                                   : exportButton.hovered
+                                     ? Theme.hover
+                                     : Theme.background
+                            border.color: Theme.border
+                            border.width: 1
+                        }
                     }
                 }
             }
         }
+
 
         RowLayout {
             Layout.fillWidth: true
@@ -334,8 +649,34 @@ Flickable {
                     }
                     TextField {
                         Layout.preferredWidth: 240
+                        Layout.preferredHeight: 36
+
                         placeholderText: "Search report..."
                         selectByMouse: true
+
+                        color: Theme.textPrimary
+                        placeholderTextColor: Theme.textSecondary
+                        selectionColor: Theme.accentBlue
+                        selectedTextColor: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 13
+
+                        leftPadding: 12
+                        rightPadding: 12
+
+                        background: Rectangle {
+                            radius: 8
+                            color: Theme.card
+                            border.width: 1
+                            border.color: parent.activeFocus
+                                          ? Theme.accentBlue
+                                          : Theme.border
+
+                            Behavior on border.color {
+                                ColorAnimation { duration: 150 }
+                            }
+                        }
+
                         onTextChanged: root.searchText = text
                     }
                 }

@@ -1,223 +1,386 @@
-// DataTable.qml - A styled data table with header, rows, and status pills
-//
-// Displays tabular data in a dark-themed card with:
-//   - A section title
-//   - Column headers
-//   - Alternating row colors
-//   - Colored status pill badges
-//   - Hover highlighting on rows
-//
-// CUSTOMIZATION:
-//   - Set the 'title' property for the section heading
-//   - Set 'columns' to a list of column header strings
-//   - Set 'rows' to a list of row objects, each containing column values
-//   - The 'statusColumn' index determines which column gets pill styling
-//   - Edit statusColor() to change which statuses get which colors
 
 import QtQuick
 import QtQuick.Layouts
 
 Rectangle {
     id: root
-    radius: 15
+
+    radius: 14
     color: Theme.card
     border.color: Theme.border
     border.width: 1
 
-    // --- Public Properties ---
-    property string title: "Data Table"
-    property var columns: []      // e.g., ["ID", "Name", "Status", "Amount", "Date"]
-    property var rows: []         // e.g., [{ id: "#1001", name: "Alice", status: "Completed", amount: "$2,450", date: "2026-02-07" }]
-    property int statusColumn: 2  // Which column index contains status values
+    // ========================================
+    // PUBLIC PROPERTIES
+    // ========================================
 
-    // Column widths: if not set, columns stretch evenly
+    property string title: "Data Table"
+    property var columns: []
+    property var rows: []
+    property int statusColumn: 2
     property var columnWidths: []
 
-    implicitHeight: headerRow.height + tableContent.height + titleLabel.height + 60
+    property int rowHeight: 48
+    property int headerHeight: 42
 
-    // ============================================================
-    // Section Title
-    // ============================================================
+    property color headerColor: Theme.sidebarTop
+    property color alternateRowColor: Theme.sidebarTop
+    property color hoverColor: Theme.hover
+
+    implicitHeight: titleLabel.height
+                    + headerRow.height
+                    + tableContent.height
+                    + 65
+
+    // ========================================
+    // SECTION TITLE
+    // ========================================
+
     Text {
         id: titleLabel
-        text: root.title
-        color: Theme.textPrimary
-        font { pixelSize: 16; bold: true; family: Theme.fontFamily }
+
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.topMargin: 20
-        anchors.leftMargin: 25
+        anchors.leftMargin: 22
+        anchors.topMargin: 18
+
+        text: root.title
+        color: Theme.textPrimary
+
+        font.family: Theme.fontFamily
+        font.pixelSize: 16
+        font.bold: true
     }
 
-    // ============================================================
-    // Column Headers
-    // ============================================================
+    // ========================================
+    // COLUMN HEADERS
+    // ========================================
+
     Rectangle {
         id: headerRow
+
         anchors.top: titleLabel.bottom
-        anchors.topMargin: 15
+        anchors.topMargin: 14
+
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 25
-        anchors.rightMargin: 25
-        height: 44
-        color: Theme.sidebarTop
+
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+
+        height: root.headerHeight
+
+        radius: 7
+        color: root.headerColor
 
         Row {
             anchors.fill: parent
+            clip: true
 
             Repeater {
                 model: root.columns
 
                 Item {
-                    width: getColumnWidth(index)
+                    required property int index
+                    required property var modelData
+
+                    width: root.getColumnWidth(index)
                     height: parent.height
 
                     Text {
                         anchors.fill: parent
                         anchors.leftMargin: 12
-                        verticalAlignment: Text.AlignVCenter
+                        anchors.rightMargin: 6
+
                         text: modelData
+
                         color: Theme.textSecondary
-                        font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 11
+                        font.bold: true
+
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
                     }
                 }
             }
         }
     }
 
-    // ============================================================
-    // Table Rows
-    // ============================================================
+    // ========================================
+    // TABLE ROWS
+    // ========================================
+
     Column {
         id: tableContent
+
         anchors.top: headerRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 25
-        anchors.rightMargin: 25
+
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
 
         Repeater {
             model: root.rows
 
-            Rectangle {
+            delegate: Rectangle {
+                id: rowItem
+
+                required property int index
+                required property var modelData
+
+                readonly property int rowIndex: index
+
                 width: tableContent.width
-                height: 50
+                height: root.rowHeight
+
                 color: rowMouse.containsMouse
-                       ? Theme.hover
-                       : (index % 2 === 1 ? Theme.border : "transparent")
+                       ? root.hoverColor
+                       : (index % 2 === 1
+                          ? root.alternateRowColor
+                          : "transparent")
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 120
+                    }
+                }
 
                 Row {
                     anchors.fill: parent
+                    clip: true
 
                     Repeater {
                         model: root.columns.length
 
-                        Item {
-                            width: getColumnWidth(index)
+                        delegate: Item {
+                            required property int index
+
+                            readonly property int columnIndex: index
+
+                            width: root.getColumnWidth(index)
                             height: parent.height
 
-                            // Status pill or plain text
                             Loader {
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 12
-                                sourceComponent: index === root.statusColumn
-                                    ? statusPillComponent : plainTextComponent
 
-                                property string cellValue: getCellValue(
-                                    root.rows[parent.parent.parent.rowIndex], index)
+                                anchors.leftMargin: 12
+                                anchors.rightMargin: 8
+
+                                property string cellValue:
+                                    root.getCellValue(
+                                        rowItem.modelData,
+                                        columnIndex
+                                    )
+
+                                sourceComponent:
+                                    columnIndex === root.statusColumn
+                                    ? statusPillComponent
+                                    : plainTextComponent
                             }
                         }
                     }
                 }
 
-                // Store the row index for child access
-                readonly property int rowIndex: index
-
+                // Row hover
                 MouseArea {
                     id: rowMouse
+
                     anchors.fill: parent
                     hoverEnabled: true
+                    acceptedButtons: Qt.NoButton
+
                     cursorShape: Qt.PointingHandCursor
+                }
+
+                // Subtle row separator
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+
+                    height: 1
+                    color: Theme.border
+                    opacity: 0.35
                 }
             }
         }
     }
 
-    // ============================================================
-    // Cell Components
-    // ============================================================
+    // ========================================
+    // EMPTY STATE
+    // ========================================
 
-    // Plain text cell
+    Text {
+        anchors.top: headerRow.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        anchors.topMargin: 35
+
+        visible: root.rows.length === 0
+
+        text: "No data available"
+
+        color: Theme.textSecondary
+        font.family: Theme.fontFamily
+        font.pixelSize: 12
+
+        horizontalAlignment: Text.AlignHCenter
+    }
+
+    // ========================================
+    // PLAIN TEXT CELL
+    // ========================================
+
     Component {
         id: plainTextComponent
 
         Text {
             text: cellValue
+
             color: Theme.textPrimary
-            font { pixelSize: 13; family: Theme.fontFamily }
+
+            font.family: Theme.fontFamily
+            font.pixelSize: 12
+
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
         }
     }
 
-    // Status pill cell
+    // ========================================
+    // STATUS PILL
+    // ========================================
+
     Component {
         id: statusPillComponent
 
         Item {
             Rectangle {
-                anchors.centerIn: parent
-                width: pillText.implicitWidth + 24
-                height: 28
-                radius: 14
+                id: pill
+
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+
+                width: Math.min(
+                    pillText.implicitWidth + 22,
+                    parent.width
+                )
+
+                height: 25
+                radius: 13
+
+                color: statusColor(cellValue)
+                opacity: 0.18
+
+            }
+
+            Text {
+                id: pillText
+
+                anchors.centerIn: pill
+
+                width: pill.width - 8
+
+                text: cellValue
+
                 color: statusColor(cellValue)
 
-                Text {
-                    id: pillText
-                    anchors.centerIn: parent
-                    text: cellValue
-                    color: "white"
-                    font { pixelSize: 11; bold: true; family: Theme.fontFamily }
-                }
+                font.family: Theme.fontFamily
+                font.pixelSize: 10
+                font.bold: true
+
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+                elide: Text.ElideRight
             }
         }
     }
 
-    // ============================================================
-    // Helper Functions
-    // ============================================================
+    // ========================================
+    // STATUS COLORS
+    // ========================================
 
-    // CUSTOMIZATION: Edit this function to change status colors
     function statusColor(status) {
-        switch (status) {
-            case "Completed": return Theme.accentGreen;
-            case "Active":    return Theme.accentGreen;
-            case "Pending":   return Theme.accentOrange;
-            case "In Progress": return Theme.accentOrange;
-            case "Inactive":  return Theme.accentOrange;
-            case "Failed":    return Theme.accentRed;
-            case "Suspended": return Theme.accentRed;
-            case "Scheduled": return Theme.accentBlue;
-            default:          return Theme.accentBlue;
+        switch (String(status).toLowerCase()) {
+
+        case "completed":
+        case "active":
+        case "success":
+        case "approved":
+            return Theme.accentGreen;
+
+        case "pending":
+        case "in progress":
+        case "inactive":
+        case "warning":
+            return Theme.accentOrange;
+
+        case "failed":
+        case "suspended":
+        case "error":
+        case "rejected":
+            return Theme.accentRed;
+
+        case "scheduled":
+        case "info":
+            return Theme.accentBlue;
+
+        default:
+            return Theme.accentPurple;
         }
     }
 
-    // Get the value for a specific cell from a row object
+    // ========================================
+    // CELL VALUE
+    // ========================================
+
     function getCellValue(rowObj, colIndex) {
-        if (!rowObj) return "";
+        if (!rowObj)
+            return "";
+
+        // Array-based rows
+        if (Array.isArray(rowObj)) {
+            if (colIndex < rowObj.length)
+                return String(rowObj[colIndex] ?? "");
+
+            return "";
+        }
+
+        // Object-based rows
         var keys = Object.keys(rowObj);
-        if (colIndex < keys.length) return rowObj[keys[colIndex]];
+
+        if (colIndex < keys.length) {
+            var value = rowObj[keys[colIndex]];
+            return value === null || value === undefined
+                   ? ""
+                   : String(value);
+        }
+
         return "";
     }
 
-    // Get column width (from columnWidths array or distribute evenly)
+    // ========================================
+    // COLUMN WIDTH
+    // ========================================
+
     function getColumnWidth(colIndex) {
-        if (root.columnWidths.length > colIndex && root.columnWidths[colIndex] > 0) {
-            return root.columnWidths[colIndex];
+        var availableWidth = Math.max(0, root.width - 40);
+
+        if (root.columnWidths
+                && root.columnWidths.length > colIndex
+                && Number(root.columnWidths[colIndex]) > 0) {
+
+            return Number(root.columnWidths[colIndex]);
         }
-        var totalAvailable = root.width - 50; // minus margins
-        return totalAvailable / root.columns.length;
+
+        if (root.columns.length === 0)
+            return 0;
+
+        return availableWidth / root.columns.length;
     }
 }

@@ -268,211 +268,164 @@ Item {
         color: Theme.background
     }
 
+
     // ========================================
-    // TOOLBAR
+    // MODERN TOOLBAR
     // ========================================
 
     Rectangle {
         id: toolbarBackground
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        height: 62
+
+        height: 72
+        radius: 12
+
         color: Theme.sidebarTop
         border.color: Theme.border
         border.width: 1
-        radius: 10
-    }
 
-    RowLayout {
-        id: toolbar
-        anchors.fill: toolbarBackground
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        spacing: 8
+        RowLayout {
+            id: toolbar
 
-        Button {
-            text: root.editMode ? "✓  Done" : "✎  Edit layout"
-
-            onClicked: root.editMode = !root.editMode
-
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+            anchors.fill: parent
+            anchors.leftMargin: 18
+            anchors.rightMargin: 18
+            spacing: 12
+            Item {
+                Layout.fillWidth: true
             }
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered ? Theme.hover : Theme.card
-                border.color: Theme.accentBlue
-                border.width: 1
-            }
-        }
+            // Edit layout button
+            Button {
+                id: editButton
 
-        Button {
-            text: "+  Add widget"
-            onClicked: addDialog.open()
+                text: root.editMode ? "✓  Done" : "✎  Edit layout"
 
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+                Layout.preferredHeight: 40
+                Layout.minimumWidth: 112
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered ? Theme.hover : Theme.card
-                border.color: Theme.border
-                border.width: 1
-            }
-        }
+                padding: 12
 
-        Button {
-            text: "Import JSON / CSV"
-            onClicked: fileDialog.open()
+                onClicked: root.editMode = !root.editMode
 
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+                contentItem: Text {
+                    text: editButton.text
+                    color: root.editMode
+                           ? Theme.accentBlue
+                           : Theme.textPrimary
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered ? Theme.hover : Theme.card
-                border.color: Theme.border
-                border.width: 1
-            }
-        }
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 12
+                    font.bold: true
 
-        Button {
-            text: "Paste JSON"
-            onClicked: jsonDialog.open()
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                background: Rectangle {
+                    radius: 8
+
+                    color: root.editMode
+                           ? Qt.darker(Theme.accentBlue, 1.7)
+                           : editButton.hovered
+                             ? Theme.hover
+                             : Theme.card
+
+                    border.color: root.editMode
+                                  ? Theme.accentBlue
+                                  : Theme.border
+
+                    border.width: 1
+                }
             }
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered ? Theme.hover : Theme.card
-                border.color: Theme.border
-                border.width: 1
-            }
-        }
+            // Add widget button
+            Button {
+                id: addButton
 
-        TextField {
-            id: apiUrl
-            Layout.fillWidth: true
-            Layout.minimumWidth: 120
-            Layout.preferredHeight: 38
+                text: "+  Add widget"
 
-            placeholderText: "REST API URL"
-            selectByMouse: true
-            color: Theme.textPrimary
-            placeholderTextColor: Theme.textSecondary
-            font.family: Theme.fontFamily
-            font.pixelSize: 12
-            leftPadding: 10
+                Layout.preferredHeight: 40
+                Layout.minimumWidth: 120
 
-            background: Rectangle {
-                radius: 7
-                color: Theme.card
-                border.color: parent.activeFocus
-                             ? Theme.accentBlue : Theme.border
-                border.width: 1
-            }
-        }
+                padding: 12
 
-        TextField {
-            id: apiToken
-            Layout.preferredWidth: 125
-            Layout.preferredHeight: 38
+                onClicked: addDialog.open()
 
-            placeholderText: "Bearer token"
-            echoMode: TextInput.Password
-            selectByMouse: true
-            color: Theme.textPrimary
-            placeholderTextColor: Theme.textSecondary
-            font.family: Theme.fontFamily
-            font.pixelSize: 12
-            leftPadding: 10
+                contentItem: Text {
+                    text: addButton.text
+                    color: Theme.textPrimary
 
-            background: Rectangle {
-                radius: 7
-                color: Theme.card
-                border.color: parent.activeFocus
-                             ? Theme.accentBlue : Theme.border
-                border.width: 1
-            }
-        }
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 12
+                    font.bold: true
 
-        Button {
-            text: root.source && root.source.loading
-                  ? "Loading..." : "↻ Fetch API"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
-            enabled: root.source && !root.source.loading
+                background: Rectangle {
+                    radius: 8
 
-            onClicked: {
-                if (root.source)
-                    root.source.loadUrl(apiUrl.text, apiToken.text);
+                    color: addButton.hovered
+                           ? Qt.darker(Theme.accentBlue, 1.2)
+                           : Theme.accentBlue
+
+                    border.color: Theme.accentBlue
+                    border.width: 1
+                }
             }
 
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+            // Vertical separator
+            Rectangle {
+                Layout.preferredWidth: 1
+                Layout.preferredHeight: 28
+
+                color: Theme.border
             }
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered
-                       ? Qt.darker(Theme.accentGreen, 1.2)
-                       : Theme.accentGreen
-            }
-        }
+            // Save button
+            Button {
+                id: saveButton
 
-        Button {
-            text: "Save layout"
-            onClicked: root.saveRequested(root.widgets)
+                text: "↥  Save layout"
 
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+                Layout.preferredHeight: 40
+                Layout.minimumWidth: 120
 
-            background: Rectangle {
-                radius: 7
-                color: parent.hovered
-                       ? Qt.darker(Theme.accentBlue, 1.2)
-                       : Theme.accentBlue
+                padding: 12
+
+                onClicked: root.saveRequested(root.widgets)
+
+                contentItem: Text {
+                    text: saveButton.text
+                    color: Theme.textPrimary
+
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 12
+                    font.bold: true
+
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    radius: 8
+
+                    color: saveButton.hovered
+                           ? Theme.hover
+                           : Theme.card
+
+                    border.color: Theme.accentGreen
+                    border.width: 1
+                }
             }
         }
     }
+
 
     // ========================================
     // ERROR MESSAGE
@@ -609,111 +562,287 @@ Item {
     // ADD WIDGET DIALOG
     // ========================================
 
+
     Dialog {
         id: addDialog
 
         title: "Add dashboard widget"
         modal: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        anchors.centerIn: Overlay.overlay
+
+        width: 380
+        padding: 20
+
+        standardButtons: Dialog.NoButton
 
         property string widgetType: "line"
         property string widgetTitle: ""
 
         background: Rectangle {
             color: Theme.sidebarTop
+            radius: 14
             border.color: Theme.border
-            radius: 12
+            border.width: 1
         }
 
-        header: Rectangle {
-            color: "transparent"
-            implicitHeight: 48
+        header: ColumnLayout {
+            spacing: 6
 
-            Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 16
-                anchors.verticalCenter: parent.verticalCenter
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 10
 
-                text: addDialog.title
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 16
-                font.bold: true
+                Rectangle {
+                    Layout.preferredWidth: 38
+                    Layout.preferredHeight: 38
+                    radius: 10
+                    color: Theme.card
+                    border.color: Theme.border
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "+"
+                        color: Theme.accentBlue
+                        font.pixelSize: 25
+                        font.bold: true
+                    }
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 2
+
+                    Text {
+                        text: "Add new widget"
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+
+                    Text {
+                        text: "Customize your dashboard"
+                        color: Theme.textSecondary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 11
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.topMargin: 12
+                height: 1
+                color: Theme.border
             }
         }
 
         contentItem: ColumnLayout {
-            width: 320
-            spacing: 12
+            spacing: 10
 
             Text {
                 text: "Widget type"
-                color: Theme.textSecondary
+                color: Theme.textPrimary
                 font.family: Theme.fontFamily
+                font.pixelSize: 12
+                font.bold: true
             }
 
             ComboBox {
                 id: typeInput
 
                 Layout.fillWidth: true
+                Layout.preferredHeight: 42
+
                 model: root.widgetTypes
                 currentIndex: 0
 
                 onActivated: function(index) {
-                    addDialog.widgetType = root.widgetTypes[index];
+                    addDialog.widgetType = root.widgetTypes[index]
                 }
 
                 contentItem: Text {
-                    leftPadding: 10
+                    leftPadding: 12
+                    rightPadding: 30
                     text: typeInput.displayText
                     color: Theme.textPrimary
-                    verticalAlignment: Text.AlignVCenter
                     font.family: Theme.fontFamily
                     font.pixelSize: 13
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                indicator: Text {
+                    x: typeInput.width - width - 12
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "⌄"
+                    color: Theme.textSecondary
+                    font.pixelSize: 18
                 }
 
                 background: Rectangle {
+                    radius: 8
                     color: Theme.card
-                    border.color: Theme.border
-                    radius: 6
+                    border.color: typeInput.activeFocus
+                                 ? Theme.accentBlue
+                                 : Theme.border
+                    border.width: 1
+                }
+
+                popup: Popup {
+                    y: typeInput.height + 4
+                    width: typeInput.width
+                    padding: 4
+
+                    background: Rectangle {
+                        color: Theme.sidebarTop
+                        border.color: Theme.border
+                        radius: 8
+                    }
+
+                    contentItem: ListView {
+                        implicitHeight: Math.min(contentHeight, 220)
+                        model: typeInput.popup.visible
+                               ? typeInput.delegateModel
+                               : null
+                        clip: true
+                        currentIndex: typeInput.highlightedIndex
+
+                        ScrollIndicator.vertical: ScrollIndicator {}
+                    }
+                }
+
+                delegate: ItemDelegate {
+                    width: typeInput.width
+                    height: 38
+
+                    contentItem: Text {
+                        text: modelData
+                        color: highlighted
+                               ? Theme.accentBlue
+                               : Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 12
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 10
+                    }
+
+                    background: Rectangle {
+                        radius: 6
+                        color: highlighted
+                               ? Theme.hover
+                               : "transparent"
+                    }
+
+                    highlighted: typeInput.highlightedIndex === index
                 }
             }
 
             Text {
-                text: "Title"
-                color: Theme.textSecondary
+                Layout.topMargin: 6
+                text: "Widget title"
+                color: Theme.textPrimary
                 font.family: Theme.fontFamily
+                font.pixelSize: 12
+                font.bold: true
             }
 
             TextField {
                 id: titleInput
 
                 Layout.fillWidth: true
-                placeholderText: "Widget title"
+                Layout.preferredHeight: 42
+
+                placeholderText: "Enter widget title..."
                 color: Theme.textPrimary
                 placeholderTextColor: Theme.textSecondary
+
                 font.family: Theme.fontFamily
+                font.pixelSize: 13
                 selectByMouse: true
 
                 background: Rectangle {
+                    radius: 8
                     color: Theme.card
-                    border.color: parent.activeFocus
-                                 ? Theme.accentBlue : Theme.border
-                    radius: 6
+                    border.color: titleInput.activeFocus
+                                 ? Theme.accentBlue
+                                 : Theme.border
+                    border.width: 1
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.topMargin: 14
+                spacing: 10
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    text: "Cancel"
+                    Layout.preferredWidth: 90
+                    Layout.preferredHeight: 38
+
+                    onClicked: addDialog.reject()
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: Theme.textSecondary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    background: Rectangle {
+                        radius: 8
+                        color: parent.hovered
+                               ? Theme.hover
+                               : Theme.card
+                        border.color: Theme.border
+                    }
+                }
+
+                Button {
+                    text: "Add widget"
+                    Layout.preferredWidth: 115
+                    Layout.preferredHeight: 38
+
+                    onClicked: addDialog.accept()
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 12
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    background: Rectangle {
+                        radius: 8
+                        color: parent.hovered
+                               ? Qt.darker(Theme.accentBlue, 1.2)
+                               : Theme.accentBlue
+                    }
                 }
             }
         }
 
         onOpened: {
-            widgetType = "line";
-            widgetTitle = "";
-            typeInput.currentIndex = 0;
-            titleInput.text = "";
+            widgetType = "line"
+            widgetTitle = ""
+            typeInput.currentIndex = 0
+            titleInput.text = ""
         }
 
-        onAccepted:
+        onAccepted: {
             root.addWidget(widgetType, titleInput.text)
+        }
     }
+
 
     // ========================================
     // FILE DIALOG
