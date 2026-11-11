@@ -15,9 +15,11 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Dashboard 1.0
 
 Flickable {
     id: usersPage
+    property var userModel: dashboardApi.users
     contentWidth: width
     contentHeight: contentColumn.height + 60
     clip: true
@@ -43,7 +45,7 @@ Flickable {
                 Layout.preferredHeight: 180
                 iconChar: "\u25CB"
                 title: "Total Users"
-                value: "2,847"
+                value: userModel.count.toString()
                 change: "+124"
                 positive: true
                 accentColor: Theme.accentBlue
@@ -72,7 +74,9 @@ Flickable {
             }
 
             // Spacer to match 3-card layout with stretch
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
         }
 
         // ============================================================
@@ -108,7 +112,10 @@ Flickable {
                         anchors.rightMargin: 20
                         verticalAlignment: TextInput.AlignVCenter
                         color: Theme.textPrimary
-                        font { pixelSize: 13; family: Theme.fontFamily }
+                        font {
+                            pixelSize: 13
+                            family: Theme.fontFamily
+                        }
                         clip: true
 
                         Text {
@@ -129,21 +136,39 @@ Flickable {
                     Layout.preferredWidth: 150
                     Layout.preferredHeight: 38
                     background: Rectangle {
-                        radius: 8; color: Theme.background
+                        radius: 8
+                        color: Theme.background
                         border.color: roleFilter.hovered ? Theme.accentBlue : Theme.border
                         border.width: 1
                     }
                     contentItem: Text {
                         text: roleFilter.displayText
                         color: Theme.textPrimary
-                        font { pixelSize: 13; family: Theme.fontFamily }
-                        verticalAlignment: Text.AlignVCenter; leftPadding: 15
+                        font {
+                            pixelSize: 13
+                            family: Theme.fontFamily
+                        }
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 15
                     }
-                    popup.background: Rectangle { color: Theme.card; border.color: Theme.border; radius: 8 }
+                    popup.background: Rectangle {
+                        color: Theme.card
+                        border.color: Theme.border
+                        radius: 8
+                    }
                     delegate: ItemDelegate {
                         width: roleFilter.width
-                        contentItem: Text { text: modelData; color: Theme.textPrimary; font { pixelSize: 13; family: Theme.fontFamily } }
-                        background: Rectangle { color: highlighted ? Theme.hover : "transparent" }
+                        contentItem: Text {
+                            text: modelData
+                            color: Theme.textPrimary
+                            font {
+                                pixelSize: 13
+                                family: Theme.fontFamily
+                            }
+                        }
+                        background: Rectangle {
+                            color: highlighted ? Theme.hover : "transparent"
+                        }
                         highlighted: roleFilter.highlightedIndex === index
                     }
                 }
@@ -155,21 +180,39 @@ Flickable {
                     Layout.preferredWidth: 160
                     Layout.preferredHeight: 38
                     background: Rectangle {
-                        radius: 8; color: Theme.background
+                        radius: 8
+                        color: Theme.background
                         border.color: userStatusFilter.hovered ? Theme.accentBlue : Theme.border
                         border.width: 1
                     }
                     contentItem: Text {
                         text: userStatusFilter.displayText
                         color: Theme.textPrimary
-                        font { pixelSize: 13; family: Theme.fontFamily }
-                        verticalAlignment: Text.AlignVCenter; leftPadding: 15
+                        font {
+                            pixelSize: 13
+                            family: Theme.fontFamily
+                        }
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 15
                     }
-                    popup.background: Rectangle { color: Theme.card; border.color: Theme.border; radius: 8 }
+                    popup.background: Rectangle {
+                        color: Theme.card
+                        border.color: Theme.border
+                        radius: 8
+                    }
                     delegate: ItemDelegate {
                         width: userStatusFilter.width
-                        contentItem: Text { text: modelData; color: Theme.textPrimary; font { pixelSize: 13; family: Theme.fontFamily } }
-                        background: Rectangle { color: highlighted ? Theme.hover : "transparent" }
+                        contentItem: Text {
+                            text: modelData
+                            color: Theme.textPrimary
+                            font {
+                                pixelSize: 13
+                                family: Theme.fontFamily
+                            }
+                        }
+                        background: Rectangle {
+                            color: highlighted ? Theme.hover : "transparent"
+                        }
                         highlighted: userStatusFilter.highlightedIndex === index
                     }
                 }
@@ -186,7 +229,11 @@ Flickable {
                         anchors.centerIn: parent
                         text: "Add User"
                         color: "white"
-                        font { pixelSize: 13; bold: true; family: Theme.fontFamily }
+                        font {
+                            pixelSize: 13
+                            bold: true
+                            family: Theme.fontFamily
+                        }
                     }
 
                     MouseArea {
@@ -194,6 +241,12 @@ Flickable {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         hoverEnabled: true
+                        onClicked: {
+                            const success = userModel.addUser("New User", "newuser@company.com", "Viewer", "Active");
+
+                            if (success)
+                                console.log("User added successfully");
+                        }
                     }
                 }
             }
@@ -215,7 +268,11 @@ Flickable {
                 id: usersTableTitle
                 text: "All Users"
                 color: Theme.textPrimary
-                font { pixelSize: 16; bold: true; family: Theme.fontFamily }
+                font {
+                    pixelSize: 16
+                    bold: true
+                    family: Theme.fontFamily
+                }
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.topMargin: 20
@@ -244,71 +301,80 @@ Flickable {
                         Text {
                             text: "User"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.fillWidth: true
                             leftPadding: 12
                         }
                         Text {
                             text: "Role"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.preferredWidth: 120
                             leftPadding: 12
                         }
                         Text {
                             text: "Status"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.preferredWidth: 130
                             leftPadding: 12
                         }
                         Text {
                             text: "Last Active"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.preferredWidth: 120
                             leftPadding: 12
                         }
                         Text {
                             text: "Activity"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.preferredWidth: 80
                             horizontalAlignment: Text.AlignHCenter
                         }
                         Text {
                             text: "Actions"
                             color: Theme.textSecondary
-                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+                            font {
+                                pixelSize: 12
+                                bold: true
+                                family: Theme.fontFamily
+                            }
                             Layout.preferredWidth: 70
                             horizontalAlignment: Text.AlignHCenter
                         }
                     }
                 }
 
-                // User rows
-                property var usersData: [
-                    { name: "Alice Johnson",  email: "alice@company.com",  initials: "AJ", role: "Admin",  status: "Active",    lastActive: "2 min ago",  activity: "95%", avatarColor: "#3498db" },
-                    { name: "Bob Martinez",   email: "bob@company.com",    initials: "BM", role: "Editor", status: "Active",    lastActive: "15 min ago", activity: "82%", avatarColor: "#2ecc71" },
-                    { name: "Carol Williams", email: "carol@company.com",  initials: "CW", role: "Viewer", status: "Active",    lastActive: "1 hour ago", activity: "67%", avatarColor: "#e74c3c" },
-                    { name: "David Kim",      email: "david@company.com",  initials: "DK", role: "Admin",  status: "Inactive",  lastActive: "2 days ago", activity: "34%", avatarColor: "#f39c12" },
-                    { name: "Eva Chen",       email: "eva@company.com",    initials: "EC", role: "Editor", status: "Active",    lastActive: "5 min ago",  activity: "91%", avatarColor: "#9b59b6" },
-                    { name: "Frank O'Brien",  email: "frank@company.com",  initials: "FO", role: "Viewer", status: "Suspended", lastActive: "1 week ago", activity: "12%", avatarColor: "#3498db" },
-                    { name: "Grace Nakamura", email: "grace@company.com",  initials: "GN", role: "Editor", status: "Active",    lastActive: "30 min ago", activity: "78%", avatarColor: "#2ecc71" },
-                    { name: "Henry Patel",    email: "henry@company.com",  initials: "HP", role: "Guest",  status: "Active",    lastActive: "3 hours ago",activity: "45%", avatarColor: "#e74c3c" },
-                    { name: "Iris Andersson", email: "iris@company.com",   initials: "IA", role: "Viewer", status: "Active",    lastActive: "10 min ago", activity: "88%", avatarColor: "#f39c12" },
-                    { name: "James Wilson",   email: "james@company.com",  initials: "JW", role: "Admin",  status: "Active",    lastActive: "Just now",   activity: "97%", avatarColor: "#9b59b6" }
-                ]
-
                 Repeater {
-                    model: userTableColumn.usersData
+                    model: userModel
 
-                    Rectangle {
+                    delegate: Rectangle {
                         width: userTableColumn.width
                         height: 60
-                        color: userRowMouse.containsMouse
-                               ? Theme.hover
-                               : (index % 2 === 1 ? Theme.border : "transparent")
+
+                        color: userRowMouse.containsMouse ? Theme.hover : (index % 2 === 1 ? Theme.border : "transparent")
 
                         RowLayout {
                             anchors.fill: parent
@@ -326,14 +392,21 @@ Flickable {
                                     spacing: 10
 
                                     Rectangle {
-                                        width: 36; height: 36; radius: 18
-                                        color: modelData.avatarColor
+                                        width: 36
+                                        height: 36
+                                        radius: 18
+                                        color: avatarColor
 
                                         Text {
                                             anchors.centerIn: parent
-                                            text: modelData.initials
+                                            text: initials
                                             color: "white"
-                                            font { pixelSize: 12; bold: true; family: Theme.fontFamily }
+
+                                            font {
+                                                pixelSize: 12
+                                                bold: true
+                                                family: Theme.fontFamily
+                                            }
                                         }
                                     }
 
@@ -342,99 +415,148 @@ Flickable {
                                         spacing: 2
 
                                         Text {
-                                            text: modelData.name
+                                            text: name
                                             color: Theme.textPrimary
-                                            font { pixelSize: 13; bold: true; family: Theme.fontFamily }
+
+                                            font {
+                                                pixelSize: 13
+                                                bold: true
+                                                family: Theme.fontFamily
+                                            }
                                         }
+
                                         Text {
-                                            text: modelData.email
+                                            text: email
                                             color: Theme.textSecondary
-                                            font { pixelSize: 11; family: Theme.fontFamily }
+
+                                            font {
+                                                pixelSize: 11
+                                                family: Theme.fontFamily
+                                            }
                                         }
                                     }
                                 }
                             }
 
-                            // Role badge
+                            // Role
                             Item {
                                 Layout.preferredWidth: 120
                                 Layout.fillHeight: true
 
                                 Rectangle {
                                     anchors.centerIn: parent
-                                    width: 85; height: 26; radius: 13
-                                    color: roleBadgeColor(modelData.role)
+                                    width: 85
+                                    height: 26
+                                    radius: 13
+
+                                    color: roleBadgeColor(role)
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: modelData.role
+                                        text: role
                                         color: "white"
-                                        font { pixelSize: 11; bold: true; family: Theme.fontFamily }
+
+                                        font {
+                                            pixelSize: 11
+                                            bold: true
+                                            family: Theme.fontFamily
+                                        }
                                     }
                                 }
                             }
 
-                            // Status pill
+                            // Status
                             Item {
                                 Layout.preferredWidth: 130
                                 Layout.fillHeight: true
 
                                 Rectangle {
                                     anchors.centerIn: parent
-                                    width: 95; height: 28; radius: 14
-                                    color: statusColor(modelData.status)
+                                    width: 95
+                                    height: 28
+                                    radius: 14
+
+                                    color: statusColor(status)
 
                                     Text {
                                         anchors.centerIn: parent
-                                        text: modelData.status
+                                        text: status
                                         color: "white"
-                                        font { pixelSize: 11; bold: true; family: Theme.fontFamily }
+
+                                        font {
+                                            pixelSize: 11
+                                            bold: true
+                                            family: Theme.fontFamily
+                                        }
                                     }
                                 }
                             }
 
                             // Last Active
                             Text {
-                                text: modelData.lastActive
+                                text: lastActive
                                 color: Theme.textPrimary
-                                font { pixelSize: 13; family: Theme.fontFamily }
+
+                                font {
+                                    pixelSize: 13
+                                    family: Theme.fontFamily
+                                }
+
                                 Layout.preferredWidth: 120
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
                             // Activity
                             Text {
-                                text: modelData.activity
+                                text: activity + "%"
                                 color: Theme.textPrimary
-                                font { pixelSize: 13; family: Theme.fontFamily }
+
+                                font {
+                                    pixelSize: 13
+                                    family: Theme.fontFamily
+                                }
+
                                 Layout.preferredWidth: 80
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
-                            // Actions button
+                            // Actions
                             Item {
                                 Layout.preferredWidth: 70
                                 Layout.fillHeight: true
 
                                 Rectangle {
                                     anchors.centerIn: parent
-                                    width: 36; height: 36; radius: 8
+                                    width: 36
+                                    height: 36
+                                    radius: 8
+
                                     color: moreMouse.containsMouse ? Theme.hover : "transparent"
+
                                     border.color: Theme.border
                                     border.width: 1
 
                                     Text {
                                         anchors.centerIn: parent
                                         text: "\u22EF"
-                                        color: moreMouse.containsMouse ? Theme.textPrimary : Theme.textSecondary
-                                        font { pixelSize: 16; family: Theme.fontFamily }
+
+                                        color: Theme.textSecondary
+
+                                        font {
+                                            pixelSize: 16
+                                            family: Theme.fontFamily
+                                        }
                                     }
 
                                     MouseArea {
                                         id: moreMouse
                                         anchors.fill: parent
-                                        cursorShape: Qt.PointingHandCursor
                                         hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+
+                                        onClicked: {
+                                            console.log("Selected user:", userId);
+                                        }
                                     }
                                 }
                             }
@@ -470,7 +592,11 @@ Flickable {
                 Text {
                     text: "Role Distribution"
                     color: Theme.textPrimary
-                    font { pixelSize: 15; bold: true; family: Theme.fontFamily }
+                    font {
+                        pixelSize: 15
+                        bold: true
+                        family: Theme.fontFamily
+                    }
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.topMargin: 15
@@ -484,10 +610,26 @@ Flickable {
                     anchors.rightMargin: 15
                     anchors.bottomMargin: 15
                     slices: [
-                        { label: "Admin",  value: 3, color: "#e74c3c" },
-                        { label: "Editor", value: 3, color: "#3498db" },
-                        { label: "Viewer", value: 3, color: "#2ecc71" },
-                        { label: "Guest",  value: 1, color: "#9b59b6" }
+                        {
+                            label: "Admin",
+                            value: 3,
+                            color: "#e74c3c"
+                        },
+                        {
+                            label: "Editor",
+                            value: 3,
+                            color: "#3498db"
+                        },
+                        {
+                            label: "Viewer",
+                            value: 3,
+                            color: "#2ecc71"
+                        },
+                        {
+                            label: "Guest",
+                            value: 1,
+                            color: "#9b59b6"
+                        }
                     ]
                 }
             }
@@ -499,7 +641,9 @@ Flickable {
             }
         }
 
-        Item { Layout.preferredHeight: 10 }
+        Item {
+            Layout.preferredHeight: 10
+        }
     }
 
     // ============================================================
@@ -509,21 +653,37 @@ Flickable {
     // CUSTOMIZATION: Change role badge colors here
     function roleBadgeColor(role) {
         switch (role) {
-            case "Admin":  return Theme.accentRed;
-            case "Editor": return Theme.accentBlue;
-            case "Viewer": return Theme.accentGreen;
-            case "Guest":  return Theme.accentPurple;
-            default:       return Theme.accentBlue;
+        case "Admin":
+            return Theme.accentRed;
+        case "Editor":
+            return Theme.accentBlue;
+        case "Viewer":
+            return Theme.accentGreen;
+        case "Guest":
+            return Theme.accentPurple;
+        default:
+            return Theme.accentBlue;
         }
     }
 
     // CUSTOMIZATION: Change status pill colors here
     function statusColor(status) {
         switch (status) {
-            case "Active":    return Theme.accentGreen;
-            case "Inactive":  return Theme.accentOrange;
-            case "Suspended": return Theme.accentRed;
-            default:          return Theme.accentBlue;
+        case "Active":
+            return Theme.accentGreen;
+        case "Inactive":
+            return Theme.accentOrange;
+        case "Suspended":
+            return Theme.accentRed;
+        default:
+            return Theme.accentBlue;
+        }
+    }
+    UserModel {
+        id: userModel
+
+        onErrorOccurred: function (message) {
+            console.error("UserModel:", message);
         }
     }
 }

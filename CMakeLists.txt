@@ -48,7 +48,10 @@ qt_add_qml_module(DashboardPlugin
         src/dashboarddatasource.h
         src/dashboarddatasource.cpp
         src/dashboard/user_model.h
-           src/user_model.cpp
+        src/user_model.cpp
+
+
+
         src/chartmodels/linechartitem.h
         src/chartmodels/linechartitem.cpp
         src/chartmodels/donuttchartitem.h
@@ -68,7 +71,11 @@ qt_add_qml_module(DashboardPlugin
         qml/pages/ReportsPage.qml
         qml/pages/UsersPage.qml
         qml/components/SettingsDialog.qml
-)
+        SOURCES src/dashboard/database_config.h
+        SOURCES src/dashboard/dashboard_plugin.h
+        SOURCES src/dashboard_plugin.cpp
+        SOURCES src/database_config.cpp
+    )
 
 set_target_properties(DashboardPlugin PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${DASHBOARD_QML_BUILD_DIR}"
