@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Qml Quick QuickControls2 QuickDialogs2 Network)
+find_package(Qt6 REQUIRED COMPONENTS Qml Quick QuickControls2 QuickDialogs2 Network Sql)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -47,6 +47,8 @@ qt_add_qml_module(DashboardPlugin
         src/dashboarddatamodel.cpp
         src/dashboarddatasource.h
         src/dashboarddatasource.cpp
+        src/dashboard/user_model.h
+           src/user_model.cpp
         src/chartmodels/linechartitem.h
         src/chartmodels/linechartitem.cpp
         src/chartmodels/donuttchartitem.h
@@ -78,6 +80,7 @@ target_link_libraries(DashboardPlugin PRIVATE
     Qt6::QuickControls2
     Qt6::QuickDialogs2
     Qt6::Network
+    Qt6::Sql
 )
 target_link_libraries(DashboardPlugin PUBLIC Qt6::Qml)
 target_compile_definitions(DashboardPlugin PRIVATE DASHBOARDPLUGIN_LIBRARY)
