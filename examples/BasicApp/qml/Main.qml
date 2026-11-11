@@ -24,4 +24,16 @@ Window {
                 setLayout(appSettings.savedLayout);
         }
     }
+    MyTheme {
+        id: companyTheme
+    }
+
+    Component.onCompleted: {
+        if (Theme.registerTheme(
+                companyTheme.name,
+                companyTheme.colors)) {
+
+            Theme.setTheme(companyTheme.name)
+        }
+    }
 }

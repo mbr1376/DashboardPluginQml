@@ -38,6 +38,7 @@ qt_add_qml_module(DashboardExample
     VERSION 1.0
     IMPORT_PATH "${DASHBOARD_QML_IMPORT_PATH}"
     QML_FILES qml/Main.qml
+    QML_FILES qml/MyTheme.qml
 )
 
 target_compile_definitions(DashboardExample PRIVATE

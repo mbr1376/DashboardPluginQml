@@ -3,9 +3,18 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    // تم انتخاب‌شده: 0 تا 5
-    // مقدار 4 یعنی Cyberpunk
+    id: themeManager
+
+    // =====================================================
+    // THEME SELECTION
+    // =====================================================
+
+    // Default theme: Cyberpunk (index 4)
     property int currentThemeIndex: 4
+
+    // =====================================================
+    // BUILT-IN THEME NAMES
+    // =====================================================
 
     readonly property var themeNames: [
         "Dark Blue Purple",
@@ -15,6 +24,10 @@ QtObject {
         "Cyberpunk",
         "Forest"
     ]
+
+    // =====================================================
+    // BUILT-IN COLOR PALETTES
+    // =====================================================
 
     readonly property var palettes: [
         ({
@@ -32,6 +45,7 @@ QtObject {
             accentOrange: "#f39c12",
             accentPurple: "#9b59b6"
         }),
+
         ({
             background: "#1a1625",
             sidebarTop: "#221833",
@@ -47,6 +61,7 @@ QtObject {
             accentOrange: "#ff9800",
             accentPurple: "#9b59b6"
         }),
+
         ({
             background: "#0d1b2a",
             sidebarTop: "#1b263b",
@@ -62,6 +77,7 @@ QtObject {
             accentOrange: "#ffaa00",
             accentPurple: "#c77dff"
         }),
+
         ({
             background: "#2e3440",
             sidebarTop: "#3b4252",
@@ -77,6 +93,7 @@ QtObject {
             accentOrange: "#d08770",
             accentPurple: "#b48ead"
         }),
+
         ({
             background: "#0a0e27",
             sidebarTop: "#1a1a2e",
@@ -92,6 +109,7 @@ QtObject {
             accentOrange: "#ffcc00",
             accentPurple: "#bd00ff"
         }),
+
         ({
             background: "#1a2421",
             sidebarTop: "#233329",
@@ -109,7 +127,49 @@ QtObject {
         })
     ]
 
-    readonly property var activeTheme: palettes[currentThemeIndex]
+    // =====================================================
+    // CUSTOM THEMES
+    // =====================================================
+
+    // Each item:
+    // {
+    //     name: "Theme Name",
+    //     colors: { ... }
+    // }
+
+    property var customThemes: []
+
+    // =====================================================
+    // ALL AVAILABLE THEMES
+    // =====================================================
+
+    readonly property var allThemeNames:
+        themeNames.concat(
+            customThemes.map(function(theme) {
+                return theme.name
+            })
+        )
+
+    readonly property var allPalettes:
+        palettes.concat(
+            customThemes.map(function(theme) {
+                return theme.colors
+            })
+        )
+
+    // =====================================================
+    // ACTIVE THEME
+    // =====================================================
+
+    readonly property var activeTheme:
+        allPalettes[currentThemeIndex] || palettes[4]
+
+    readonly property string currentThemeName:
+        allThemeNames[currentThemeIndex] || themeNames[4]
+
+    // =====================================================
+    // THEME COLORS
+    // =====================================================
 
     property color background: activeTheme.background
     property color sidebarTop: activeTheme.sidebarTop
@@ -127,8 +187,131 @@ QtObject {
     property color accentOrange: activeTheme.accentOrange
     property color accentPurple: activeTheme.accentPurple
 
+    // Font
     property string fontFamily: "Segoe UI"
 
-    readonly property string currentThemeName:
-        themeNames[currentThemeIndex]
+    // =====================================================
+    // REQUIRED COLOR KEYS
+    // =====================================================
+
+    readonly property var requiredColorKeys: [
+        "background",
+        "sidebarTop",
+        "sidebarBottom",
+        "card",
+        "hover",
+        "border",
+        "textPrimary",
+        "textSecondary",
+        "accentBlue",
+        "accentGreen",
+        "accentRed",
+        "accentOrange",
+        "accentPurple"
+    ]
+
+    // =====================================================
+    // REGISTER CUSTOM THEME
+    // =====================================================
+
+    function registerTheme(name, colors) {
+
+        if (typeof name !== "string" || !name.trim()) {
+            console.warn("Theme: Invalid theme name")
+            return false
+        }
+
+        if (!colors || typeof colors !== "object") {
+            console.warn("Theme: Invalid colors object")
+            return false
+        }
+
+        const cleanName = name.trim()
+
+        // Check duplicate names
+        if (allThemeNames.indexOf(cleanName) !== -1) {
+            console.warn("Theme: Theme name already exists:", cleanName)
+            return false
+        }
+
+        // Validate required colors
+        for (let i = 0; i < requiredColorKeys.length; i++) {
+
+            const key = requiredColorKeys[i]
+            const value = colors[key]
+
+            if (typeof value !== "string" ||
+                !/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(value)) {
+
+                console.warn("Theme: Invalid or missing color:", key)
+                return false
+            }
+        }
+
+        // Copy colors to prevent external mutation
+        const copiedColors = {}
+
+        for (let i = 0; i < requiredColorKeys.length; i++) {
+            const key = requiredColorKeys[i]
+            copiedColors[key] = colors[key]
+        }
+
+        // Create updated array
+        const updatedThemes = customThemes.slice()
+
+        updatedThemes.push({
+            name: cleanName,
+            colors: copiedColors
+        })
+
+        // Reassign property to notify QML bindings
+        customThemes = updatedThemes
+
+        console.log("Theme registered successfully:", cleanName)
+
+        return true
+    }
+
+    // =====================================================
+    // SELECT THEME BY NAME
+    // =====================================================
+
+    function setTheme(name) {
+
+        const index = allThemeNames.indexOf(name)
+
+        if (index === -1) {
+            console.warn("Theme not found:", name)
+            return false
+        }
+
+        currentThemeIndex = index
+
+        console.log("Theme changed to:", name)
+
+        return true
+    }
+
+    // =====================================================
+    // SELECT THEME BY INDEX
+    // =====================================================
+
+    function setThemeByIndex(index) {
+
+        if (index < 0 || index >= allThemeNames.length)
+            return false
+
+        currentThemeIndex = index
+        return true
+    }
+
+    // =====================================================
+    // CHECK IF THEME IS CUSTOM
+    // =====================================================
+
+    function isCustomTheme(name) {
+        return customThemes.some(function(theme) {
+            return theme.name === name
+        })
+    }
 }

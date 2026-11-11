@@ -17,10 +17,13 @@ set(DASHBOARD_QML_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/qml/Dashboard")
 
 qt_add_library(DashboardPlugin SHARED)
 add_library(Dashboard::DashboardPlugin ALIAS DashboardPlugin)
-
 set_source_files_properties(qml/Theme.qml PROPERTIES
     QT_RESOURCE_ALIAS Theme.qml
     QT_QML_SINGLETON_TYPE TRUE
+)
+
+set_source_files_properties(qml/components/SettingsDialog.qml
+    PROPERTIES QT_RESOURCE_ALIAS SettingsDialog.qml
 )
 set_source_files_properties(qml/DashboardView.qml PROPERTIES QT_RESOURCE_ALIAS DashboardView.qml)
 set_source_files_properties(qml/DashboardBuilder.qml PROPERTIES QT_RESOURCE_ALIAS DashboardBuilder.qml)
