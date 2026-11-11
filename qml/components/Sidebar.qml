@@ -185,6 +185,9 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                      settingsDialog.open()
+                  }
             }
         }
 
@@ -231,5 +234,8 @@ Rectangle {
                 }
             }
         }
+    }
+    SettingsDialog {
+        id: settingsDialog
     }
 }

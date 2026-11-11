@@ -62,6 +62,7 @@ qt_add_qml_module(DashboardPlugin
         qml/pages/AnalyticsPage.qml
         qml/pages/ReportsPage.qml
         qml/pages/UsersPage.qml
+        qml/components/SettingsDialog.qml
 )
 
 set_target_properties(DashboardPlugin PROPERTIES
