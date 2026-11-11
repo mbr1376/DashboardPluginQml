@@ -91,27 +91,8 @@ add_subdirectory(examples/BasicApp)
 add_subdirectory(examples/JsonApp)
 add_subdirectory(examples/RestApiApp)
 
-qt_add_executable(ModernDashboardQML src/main.cpp)
-set_target_properties(ModernDashboardQML PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_CURRENT_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_CURRENT_BINARY_DIR}"
-)
 
-set_source_files_properties(qml/Main.qml PROPERTIES QT_RESOURCE_ALIAS Main.qml)
-qt_add_qml_module(ModernDashboardQML
-    URI DashboardApp
-    VERSION 1.0
-    IMPORT_PATH "${CMAKE_CURRENT_BINARY_DIR}/qml"
-    QML_FILES qml/Main.qml
-)
 
-target_link_libraries(ModernDashboardQML PRIVATE
-    Qt6::Quick
-    Qt6::QuickControls2
-)
 
 if(UNIX AND NOT APPLE)
     set_target_properties(DashboardPluginplugin PROPERTIES INSTALL_RPATH "$ORIGIN")
@@ -176,15 +157,3 @@ install(FILES
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/Dashboard"
 )
 
-if(WIN32)
-    set_target_properties(ModernDashboardQML PROPERTIES WIN32_EXECUTABLE TRUE)
-endif()
-
-if(APPLE)
-    set_target_properties(ModernDashboardQML PROPERTIES
-        MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_GUI_IDENTIFIER com.learnqt.dashboard.qml
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
-    )
-endif()

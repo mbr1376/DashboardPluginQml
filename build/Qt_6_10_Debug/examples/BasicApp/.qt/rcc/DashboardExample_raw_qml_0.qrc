@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/DashboardExample/">
-    <file alias="Main.qml">/home/client112/Documents/project/myself/qt-qml/examples/BasicApp/qml/Main.qml</file>
-  </qresource>
-</RCC>
-
