@@ -49,9 +49,11 @@ qt_add_qml_module(DashboardPlugin
         src/dashboarddatasource.cpp
         src/dashboard/user_model.h
         src/user_model.cpp
-
-
-
+        src/dashboard/database_config.h
+        src/database_config.cpp
+        src/dashboard/dashboard_runtime.h
+        src/dashboard_runtime.cpp
+        src/report/reportـengine.h src/report/reportـengine.cpp
         src/chartmodels/linechartitem.h
         src/chartmodels/linechartitem.cpp
         src/chartmodels/donuttchartitem.h
@@ -71,12 +73,7 @@ qt_add_qml_module(DashboardPlugin
         qml/pages/ReportsPage.qml
         qml/pages/UsersPage.qml
         qml/components/SettingsDialog.qml
-        SOURCES src/dashboard/database_config.h
-        SOURCES
-        SOURCES
-        SOURCES src/database_config.cpp
-        SOURCES src/dashboard/dashboard_runtime.h
-        SOURCES src/dashboard_runtime.cpp
+
     )
 
 set_target_properties(DashboardPlugin PROPERTIES
