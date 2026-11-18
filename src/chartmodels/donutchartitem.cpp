@@ -3,7 +3,7 @@
 // Draws a donut chart with legend using QPainter.
 // Slice data comes from QML as a list of QVariantMap objects.
 
-#include "donuttchartitem.h"
+#include "chartmodels/donutchartitem.h"
 
 #include <QPainter>
 #include <QPainterPath>

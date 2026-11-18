@@ -1,5 +1,5 @@
-#include "dashboard_runtime.h"
-#include "user_model.h"
+#include "dashboard/dashboard_runtime.h"
+#include "dashboard/user_model.h"
 
 #include <QDebug>
 #include <QQmlContext>
