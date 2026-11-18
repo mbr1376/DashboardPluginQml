@@ -1,16 +1,66 @@
+
 cmake_minimum_required(VERSION 3.21)
 
-project(AdvancedControls
+project(DynamicDashboard
     VERSION 1.0.0
+    DESCRIPTION "Reusable Qt Quick Dashboard Library"
     LANGUAGES CXX
 )
 
-find_package(Qt6  REQUIRED COMPONENTS
-    Quick
+# CMake standard modules
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(CTest)
+
+# Qt dependencies
+find_package(Qt6 6.8 REQUIRED COMPONENTS
+    Core
     Qml
+    Quick
+    QuickControls2
+    QuickDialogs2
+    Network
+    Sql
 )
 
 qt_standard_project_setup(REQUIRES 6.8)
 
-add_subdirectory(src/)
-add_subdirectory(examples/advancedcontrols)
+if(COMMAND qt_policy)
+    qt_policy(SET QTP0001 NEW)
+endif()
+
+option(BUILD_EXAMPLES "Build example applications" ON)
+
+add_subdirectory(src)
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples/BasicApp)
+    add_subdirectory(examples/JsonApp)
+    add_subdirectory(examples/RestApiApp)
+endif()
+
+# if(BUILD_TESTING)
+#     add_subdirectory(tests)
+# endif()
+
+# Package configuration
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DashboardConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfig.cmake"
+    INSTALL_DESTINATION
+        "${CMAKE_INSTALL_LIBDIR}/cmake/Dashboard"
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfigVersion.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfigVersion.cmake"
+    DESTINATION
+        "${CMAKE_INSTALL_LIBDIR}/cmake/Dashboard"
+)
