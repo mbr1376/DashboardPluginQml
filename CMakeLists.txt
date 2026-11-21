@@ -7,12 +7,10 @@ project(DynamicDashboard
     LANGUAGES CXX
 )
 
-# CMake standard modules
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)
 
-# Qt dependencies
 find_package(Qt6 6.8 REQUIRED COMPONENTS
     Core
     Qml
@@ -39,9 +37,11 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples/RestApiApp)
 endif()
 
-# if(BUILD_TESTING)
-#     add_subdirectory(tests)
-# endif()
+# QML import path for build-tree examples
+set(DASHBOARD_QML_IMPORT_PATH
+    "${CMAKE_BINARY_DIR}/src/qml"
+    CACHE PATH "Dashboard QML import path"
+)
 
 # Package configuration
 configure_package_config_file(
@@ -57,10 +57,6 @@ write_basic_package_version_file(
     COMPATIBILITY SameMajorVersion
 )
 
-set(DASHBOARD_QML_IMPORT_PATH
-    "${CMAKE_BINARY_DIR}/src/qml"
-    CACHE PATH "Dashboard QML import path"
-)
 install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfig.cmake"
