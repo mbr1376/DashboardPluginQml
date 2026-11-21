@@ -1,3 +1,4 @@
+
 import QtQuick
 import Dashboard
 
@@ -10,20 +11,6 @@ Window {
     title: "Dashboard Module - Example"
     color: Theme.background
 
-    DashboardView {
-        id: dashboard
-        anchors.fill: parent
-        dataModel: dashboardModel
-
-        onSaveLayoutRequested: function(layout) {
-            appSettings.saveLayout(layout);
-        }
-
-        Component.onCompleted: {
-            if (appSettings.hasSavedLayout)
-                setLayout(appSettings.savedLayout);
-        }
-    }
     MyTheme {
         id: companyTheme
     }
@@ -32,8 +19,20 @@ Window {
         if (Theme.registerTheme(
                 companyTheme.name,
                 companyTheme.colors)) {
-
             Theme.setTheme(companyTheme.name)
+        }
+
+        if (appSettings.hasSavedLayout)
+            dashboard.setLayout(appSettings.savedLayout)
+    }
+
+    DashboardView {
+        id: dashboard
+        anchors.fill: parent
+        dataModel: dashboardModel
+
+        onSaveLayoutRequested: function(layout) {
+            appSettings.saveLayout(layout)
         }
     }
 }

@@ -57,7 +57,10 @@ write_basic_package_version_file(
     COMPATIBILITY SameMajorVersion
 )
 
-
+set(DASHBOARD_QML_IMPORT_PATH
+    "${CMAKE_BINARY_DIR}/src/qml"
+    CACHE PATH "Dashboard QML import path"
+)
 install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfig.cmake"

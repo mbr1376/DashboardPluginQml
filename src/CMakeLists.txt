@@ -25,7 +25,21 @@ target_include_directories(DashboardPlugin
         ${CMAKE_CURRENT_SOURCE_DIR}/chartmodels
         ${CMAKE_CURRENT_SOURCE_DIR}/report
 )
+set_source_files_properties(
+    ../qml/Theme.qml
+    PROPERTIES
+        QT_RESOURCE_ALIAS Theme.qml
+        QT_QML_SINGLETON_TYPE TRUE
+)
 
+set_source_files_properties(
+    ../qml/DashboardView.qml
+    ../qml/DashboardBuilder.qml
+    ../qml/DashboardWidget.qml
+    ../qml/DashboardChart.qml
+    PROPERTIES
+        QT_RESOURCE_ALIAS ""
+)
 qt_add_qml_module(DashboardPlugin
     URI Dashboard
     VERSION 1.0
