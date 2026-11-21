@@ -57,6 +57,7 @@ write_basic_package_version_file(
     COMPATIBILITY SameMajorVersion
 )
 
+
 install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/DashboardConfig.cmake"

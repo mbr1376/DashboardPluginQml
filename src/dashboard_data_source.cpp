@@ -1,4 +1,4 @@
-#include "dashboarddatasource.h"
+#include "dashboard_data_source.h"
 
 #include <QFile>
 #include <QFileInfo>

@@ -3,7 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QSettings>
-#include <dashboard/dashboarddatamodel.h>
+#include <dashboard/dashboard_data_model.h>
 
 class DashboardExampleSettings : public QObject
 {

@@ -1,4 +1,4 @@
-#include "dashboard/dashboarddatamodel.h"
+#include "dashboard/dashboard_data_model.h"
 
 #include <QJsonObject>
 #include <QSet>
