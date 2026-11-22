@@ -1,44 +1,153 @@
-# Modern Dashboard - Qt QML
+# Qt DynamicDashboard
 
-A modern, dark-themed dashboard application built with **Qt 6 QML/Quick** and **C++**.
-Demonstrates professional Qt Quick development with custom Canvas rendering, declarative UI, and Material-inspired design.
+**A reusable, data-driven dashboard library for Qt Quick and QML.**
 
-## What You'll See
+Qt DynamicDashboard is a reusable Qt Quick library that provides dashboard UI components, data-driven views, charts, tables, and customizable layouts for Qt applications.
 
-A polished, dark dashboard featuring:
-- **Sidebar navigation** with smooth hover effects and diamond logo
-- **Dynamic JSON, CSV, REST, and Qt model data sources**
-- **Editable dashboard layout** with draggable, resizable, addable, and removable widgets
-- **Selectable charts**: line, bar, area, scatter, pie, and donut
-- **Data tables** generated from the active data fields
-- **4 navigable pages**: Dashboard, Analytics, Reports, Users
-- **Fully declarative QML UI** with responsive layouts
+The project combines **C++17** and **QML** and is built with **CMake**. It is designed to be integrated into other Qt Quick applications rather than being limited to a single standalone dashboard application.
+
+## Features
+
+- **Reusable QML module** — import the library using `import Dashboard`.
+- **Dashboard components** — reusable dashboard views, widgets, cards, tables, and UI components.
+- **Dynamic data handling** — work with application data and supported data sources.
+- **JSON and CSV support** — load structured data into the dashboard.
+- **REST API integration** — retrieve JSON data from HTTP endpoints.
+- **C++ integration** — use C++ data models and application-side logic.
+- **Charts and visualization** — display data through reusable chart components.
+- **Customizable themes** — centralize dashboard appearance and colors.
+- **Editable layouts** — customize dashboard widget arrangements.
+- **Example applications** — explore different integration and data-loading scenarios.
 
 ## Requirements
 
-- **Qt 6.0+** (Qt Quick, Quick Controls, Quick Dialogs, and Network modules)
-- **CMake 3.16+**
-- **C++17 or later** compiler (MSVC, GCC, or Clang with MinGW)
-- **Windows, Linux, or macOS**
+| Dependency | Requirement |
+|---|---|
+| Qt | 6.8 or newer |
+| CMake | 3.21 or newer |
+| C++ standard | C++17 |
+| Qt modules | Core, Qml, Quick, QuickControls2, QuickDialogs2, Network, Sql |
 
-## How to Build & Run
+The project has been built and tested with Qt 6.10.1 on Linux (GCC 64-bit).
 
-### Build and install the QML module
+Other operating systems and Qt configurations should be tested before being advertised as officially supported.
 
-The reusable module is published as the `Dashboard` QML URI. Build and install it
-with the same Qt 6 installation used by the application that will import it:
+## Project Structure
 
-```bash
-cmake -S . -B build -DCMAKE_INSTALL_PREFIX="$HOME/.local"
-cmake --build build
-cmake --install build
+```text
+Qt-DynamicDashboard/
+├── CMakeLists.txt
+├── LICENSE
+├── README.md
+│
+├── cmake/
+│   └── DashboardConfig.cmake.in
+│
+├── src/
+│   ├── CMakeLists.txt
+│   ├── dashboard/
+│   │   ├── dashboard_data_model.h
+│   │   ├── dashboard_data_source.h
+│   │   ├── dashboard_runtime.h
+│   │   ├── database_config.h
+│   │   └── user_model.h
+│   ├── chartmodels/
+│   ├── report/
+│   └── *.cpp
+│
+├── qml/
+│   ├── qmldir
+│   ├── Theme.qml
+│   ├── DashboardBuilder.qml
+│   ├── DashboardChart.qml
+│   ├── DashboardView.qml
+│   ├── DashboardWidget.qml
+│   ├── components/
+│   └── pages/
+│
+├── examples/
+│   ├── BasicApp/
+│   ├── JsonApp/
+│   └── RestApiApp/
+│
+└── tests/
 ```
 
-The module is installed under
-`<prefix>/<CMAKE_INSTALL_LIBDIR>/qt6/qml/Dashboard` (for example, `lib64/qt6/qml`
-on some Linux systems). Add the parent `qml` directory to the importing
-application's QML import path, then use the embeddable `DashboardView` from any
-Qt Quick scene:
+## Build the Project
+
+### 1. Configure Qt
+
+Make sure Qt 6.8 or newer and the required Qt modules are installed.
+
+If CMake cannot locate your Qt installation, set `CMAKE_PREFIX_PATH` to the Qt installation directory.
+
+For example, on Linux:
+
+```bash
+export CMAKE_PREFIX_PATH="$HOME/Qt/6.10.1/gcc_64"
+```
+
+Adjust the path to match your Qt installation.
+
+### 2. Configure the project
+
+From the repository root:
+
+```bash
+cmake -S . -B build \
+  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
+  -DBUILD_EXAMPLES=ON
+```
+
+### 3. Build
+
+```bash
+cmake --build build --parallel
+```
+
+The project builds the library and, when `BUILD_EXAMPLES` is enabled, its example applications.
+
+## Run the Examples
+
+The repository includes three example applications.
+
+### BasicApp
+
+`examples/BasicApp`
+
+Demonstrates a basic Qt Quick application using the dashboard library.
+
+### JsonApp
+
+`examples/JsonApp`
+
+Demonstrates loading and displaying JSON data.
+
+### RestApiApp
+
+`examples/RestApiApp`
+
+Demonstrates retrieving data from a REST API.
+
+Build and run the example targets from the root build directory:
+
+```bash
+cmake --build build --target DashboardExample
+cmake --build build --target DashboardJsonExample
+cmake --build build --target DashboardRestApiExample
+```
+
+Run the generated executables from their build output directories, or launch the corresponding targets through Qt Creator.
+
+## Use the Dashboard in a QML Application
+
+The library exposes the QML module URI:
+
+```qml
+import Dashboard
+```
+
+A basic usage example:
 
 ```qml
 import QtQuick
@@ -55,664 +164,90 @@ Window {
 }
 ```
 
-For example, set the path in the importing application's C++ entry point:
+This example demonstrates embedding the dashboard view inside a host application's Qt Quick window.
 
-```cpp
-engine.addImportPath("/path/to/prefix/<libdir>/qt6/qml");
+For data loading, layout management, and application integration, refer to the example applications and the library's QML and C++ source files.
+
+## Install and Integrate
+
+The project provides CMake installation and package configuration support.
+
+Configure the installation prefix:
+
+```bash
+cmake -S . -B build \
+  -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \
+  -DCMAKE_INSTALL_PREFIX="$HOME/.local"
 ```
 
-Replace `<libdir>` with the configured `CMAKE_INSTALL_LIBDIR` value. The module
-requires Qt Quick, Qt Quick Controls 2, Qt Quick Dialogs, and Qt Network.
+Build and install:
 
-### Dynamic data, charts, and layout editing
-
-The dashboard opens in edit mode when the user selects **Edit layout**. Widgets
-can be dragged, resized from their lower-right corner, removed, or added. New
-widgets can display a table or line, bar, area, scatter, pie, or donut chart.
-Chart fields are selected from the keys in the active data rows.
-
-Data can be loaded in the dashboard UI from JSON/CSV files, pasted as JSON, or
-fetched from a REST endpoint. The JSON root may be an array of objects or an
-object with a `data` or `rows` array. CSV files must have a header row. REST
-requests use GET and optionally accept a Bearer token.
-
-The **Analytics** page derives record counts, totals, averages, unique values,
-largest records, and selectable charts from the active dataset. The **Reports**
-page groups that dataset by a selected field, calculates sum/average/count/min/
-max, supports searching the generated results, and emits CSV for the host to
-save. `DashboardView` exposes `reportGenerated(report)` and
-`reportExportRequested(fileName, csv)` signals so the host can persist or export
-reports using its own storage and file APIs.
-
-The host application can also supply data directly:
-
-```qml
-import Dashboard
-
-DashboardView {
-    id: dashboard
-    dataModel: hostListModel // QML ListModel or a QAbstractItemModel with role names
-
-    onDataLoadFailed: function(message) {
-        console.error(message);
-    }
-
-    onLayoutChanged: function(layout) {
-        // Optional: update the host application's in-memory state.
-    }
-
-    onSaveLayoutRequested: function(layout) {
-        // Persist this QVariantList/JSON in the host application.
-        settings.saveDashboardLayout(layout);
-    }
-}
+```bash
+cmake --build build --parallel
+cmake --install build
 ```
 
-Alternatively, call `setData(rows)`, `loadJson(text)`, `loadCsv(text)`,
-`loadFile(url)`, or `loadRest(url, bearerToken)` on the `DashboardView` object.
-Call `setLayout(layout)` to restore the saved layout. Each layout entry has
-`id`, `title`, `type`, `x`, `y`, `w`, `h`, `xField`, and `yField` properties.
-The host owns persistence: **Save layout** emits `saveLayoutRequested`, while
-`layoutChanged` reports edits as they happen.
+The exported CMake target is:
 
-### Fill the dashboard from C++
-
-`DashboardDataModel` is the public `QAbstractListModel` for providing data from
-the host application's C++ code. Pass it to `DashboardView` through its
-`dataModel` property:
-
-```cpp
-#include <dashboard/dashboarddatamodel.h>
-
-DashboardDataModel data;
-data.setRows({
-    {{QStringLiteral("month"), QStringLiteral("Jan")},
-     {QStringLiteral("sales"), 120}},
-    {{QStringLiteral("month"), QStringLiteral("Feb")},
-     {QStringLiteral("sales"), 185}}
-});
-
-engine.rootContext()->setContextProperty(QStringLiteral("dashboardModel"), &data);
+```cmake
+Dashboard::DashboardPlugin
 ```
 
-```qml
-DashboardView {
-    dataModel: dashboardModel
-}
-```
-
-Updates are reflected in the dashboard, Analytics, and Reports pages:
-
-```cpp
-data.appendRow({{QStringLiteral("month"), QStringLiteral("Mar")},
-                {QStringLiteral("sales"), 210}});
-data.updateRow(0, {{QStringLiteral("sales"), 135}});
-data.removeRow(1);
-```
-
-The model also provides `setRows()`, `rowAt()`, and `clear()`. To use it from a
-separately built CMake application, install the module and link its exported
-target:
+A consumer application can use the package configuration and exported target:
 
 ```cmake
 find_package(Dashboard 1.0 CONFIG REQUIRED)
-target_link_libraries(MyApp PRIVATE Dashboard::DashboardPlugin)
+
+target_link_libraries(MyApp
+    PRIVATE
+        Dashboard::DashboardPlugin
+)
 ```
 
-Set `CMAKE_PREFIX_PATH` to the install prefix and add
-`<prefix>/<libdir>/qt6/qml` to the application's QML import path.
-`examples/BasicApp` demonstrates the public C++ `DashboardDataModel` API and
-`QSettings` layout persistence. `examples/JsonApp` loads editable JSON text, and
-`examples/RestApiApp` fetches JSON from a REST endpoint with an optional bearer
-token.
+The consumer must also be able to locate the installed QML module. The exact QML import path depends on the installation layout and the configured `CMAKE_INSTALL_LIBDIR`.
 
-### Run the example consumer application
+## Customization
 
-The `examples/BasicApp` project demonstrates importing the installed module
-from a separate Qt Quick application. First build and install the module as
-shown above, then configure, build, and run the example:
+The QML source tree contains the dashboard's reusable UI components, pages, and theme definitions.
 
-```bash
-cmake -S examples/BasicApp -B build/basic-example \
-  -DCMAKE_PREFIX_PATH="$HOME/.local" \
-  -DDASHBOARD_QML_IMPORT_PATH="$HOME/.local/lib64/qt6/qml"
-cmake --build build/basic-example
-./build/basic-example/bin/DashboardExample
-```
+Important locations include:
 
-Set `DASHBOARD_QML_IMPORT_PATH` to the directory that directly contains
-`Dashboard/` (use your configured library directory, such as `lib64` if
-applicable). The example window shows the embeddable dashboard running inside a
-host application's `Window`.
+- `qml/Theme.qml` — shared theme definitions.
+- `qml/components/` — reusable interface components.
+- `qml/pages/` — dashboard pages.
+- `qml/DashboardBuilder.qml` — dashboard building and layout functionality.
+- `qml/DashboardChart.qml` — chart presentation.
+- `qml/DashboardWidget.qml` — dashboard widget component.
 
-To build the same example against the in-tree module without installing it,
-configure the main project and build its example target:
+You can use these files as a starting point when adapting the dashboard to your application's design and requirements.
 
-```bash
-cmake -S . -B build
-cmake --build build --target DashboardExample
-./build/examples/BasicApp/bin/DashboardExample
-```
+## Contributing
 
-The main project also builds all three example applications:
+Contributions, bug reports, and suggestions are welcome.
 
-```bash
-cmake --build build --target DashboardJsonExample DashboardRestApiExample
-./build/examples/JsonApp/bin/DashboardJsonExample
-./build/examples/RestApiApp/bin/DashboardRestApiExample
-```
+Before submitting a contribution:
 
-In the JSON example, edit the sample array and click **Load JSON**. Rows must be
-objects; a top-level array or an object containing a `data` or `rows` array is
-accepted. The REST example starts with a public posts endpoint; replace it with
-an HTTP(S) URL returning one of those JSON shapes. The optional token is sent
-as an `Authorization: Bearer ...` header and is not saved by the example.
+1. Check existing issues and discussions.
+2. Describe the problem or proposed improvement.
+3. Keep changes focused and consistent with the project's architecture.
+4. Build the project and test affected examples.
+5. Submit a pull request with a clear description of the changes.
 
-### Option 1: Using Qt Creator (Recommended for QML)
+Please read `CONTRIBUTING.md` before contributing, once the contribution guidelines are available in the repository.
 
-1. Open **Qt Creator**
-2. Click **File → Open File or Project**
-3. Navigate to `qt-qml/CMakeLists.txt` and open it
-4. Select your Qt 6 kit (MinGW 64-bit or similar)
-5. Click **Configure Project**
-6. Press **Ctrl+R** (or click the green play button) to build and run
+## License
 
-### Option 2: Using VS Code with CMake Extension
+Qt DynamicDashboard is distributed under the **MIT License**.
 
-1. Open this folder (`qt-qml`) in **Visual Studio Code**
-2. Install the **CMake Tools** extension if you haven't already
-3. Press **Ctrl+Shift+P** (or **Cmd+Shift+P** on macOS) and select:
-   - **CMake: Configure** (first time only)
-   - **CMake: Build**
-4. Run the application:
-   - Press **F5** or use **CMake: Run Without Debugging**
+See the [LICENSE](LICENSE) file for details.
 
-### Option 3: Command Line Build
+## Project
 
-```bash
-# From the qt-qml directory
-mkdir build
-cd build
-cmake ..
-cmake --build .
+**Repository:**  
+https://github.com/mbr1376/DashboardPluginQml
 
-# Run the executable
-./ModernDashboardQML          # Linux/macOS
-ModernDashboardQML.exe        # Windows
-```
+**Project name:** Qt DynamicDashboard
 
-## Project Structure
+**License:** MIT
 
-```
-qt-qml/
-├── CMakeLists.txt              # Plugin module and standalone app configuration
-├── README.md                   # This file
-├── qml/
-│   ├── Main.qml                # Standalone application window
-│   ├── DashboardView.qml       # Embeddable Dashboard root item
-│   ├── DashboardBuilder.qml    # Data import and widget layout editor
-│   ├── DashboardWidget.qml     # Resizable dashboard widget
-│   ├── DashboardChart.qml      # Dynamic chart renderer
-│   ├── Theme.qml               # Color & font definitions (Singleton)
-│   ├── qmldir                  # QML module definition
-│   ├── components/
-│   │   ├── Sidebar.qml         # Left navigation panel
-│   │   ├── TopBar.qml          # Top breadcrumb bar
-│   │   ├── StatCard.qml        # Animated stat card (Canvas API)
-│   │   └── DataTable.qml       # Data table with status pills
-│   └── pages/
-│       ├── DashboardPage.qml   # Main dashboard with cards & charts
-│       ├── AnalyticsPage.qml   # Dynamic analytics derived from active data
-│       ├── ReportsPage.qml     # Dynamic grouped report and CSV export
-│       └── UsersPage.qml       # Users page placeholder
-├── examples/
-│   └── BasicApp/              # Separate app importing DashboardView
-│       ├── CMakeLists.txt
-│       ├── qml/Main.qml
-│       └── src/main.cpp
-├── src/
-│   ├── main.cpp                # Application entry point
-│   ├── dashboarddatasource.h/.cpp # JSON, CSV, REST, and Qt model data
-│   └── chartmodels/
-│       ├── linechartitem.h/.cpp    # C++ line chart with QPainter
-│       └── donutchartitem.h/.cpp   # C++ donut chart with QPainter
-└── build/                      # Generated build files
-```
-
----
-
-## 🎨 Quick Customization Guide
-
-This guide shows you **exactly where to make changes** to customize the dashboard.
-All examples include **commented-out alternatives** you can uncomment to see the effects.
-
----
-
-### 🌟 **MOST IMPACTFUL**: Switch Complete Themes
-
-Want to **dramatically change the entire look** with one simple edit? We've created **6 complete color themes** with vastly different visual styles!
-
-Each theme changes:
-- ✨ Background colors (dramatically different!)
-- 🎨 Sidebar appearance and gradients
-- 🔲 Card and button styles
-- 🖱️ Hover effects
-- 📊 All accent colors and borders
-
-#### 📁 **Change the Theme Colors**
-
-**File:** [`qml/Theme.qml`](qml/Theme.qml#L1-L140)
-
-1. Open [`qml/Theme.qml`](qml/Theme.qml)
-2. Find the **THEME 1: DARK BLUE PURPLE** section (currently active)
-3. **Comment out** all the `readonly property color` lines in THEME 1
-4. **Uncomment** the entire theme section you want (THEME 2, 3, 4, 5, or 6)
-5. Save the file — **no rebuild needed!** Run the app to see changes instantly
-
-**Available themes:**
-
-- **THEME 1: DARK BLUE PURPLE** (Default) — Original dark blue/purple
-- **THEME 2: PURPLE BRANDING** (🟣) — Vibrant purple/violet branding
-- **THEME 3: OCEAN BREEZE** (🌊) — Cool blue/cyan professional
-- **THEME 4: NORD DARK** (🏔️) — Muted, soft Nord palette
-- **THEME 5: CYBERPUNK** (⚡) — Neon futuristic with high contrast
-- **THEME 6: FOREST** (🌲) — Earthy green nature theme
-
-**Example change:**
-```qml
-// Comment out THEME 1 (wrap in /* ... */ )
-/*
-readonly property color background:    "#1a1a2e"
-readonly property color sidebarTop:    "#1e1e2e"
-// ... rest of THEME 1 ...
-*/
-
-// Uncomment THEME 5 (remove /* and */ )
-readonly property color background:    "#0a0e27"
-readonly property color sidebarTop:    "#1a1a2e"
-readonly property color sidebarBottom: "#16213e"
-// ... rest of THEME 5 ...
-```
-
-**✨ QML Advantage:** Changes appear **instantly** when you run the app — no rebuild required!
-
----
-
-### 1️⃣ Change the Global Font
-
-#### **File:** [`src/main.cpp`](src/main.cpp#L30-L75)
-
-**What to do:**
-1. Open [`src/main.cpp`](src/main.cpp)
-2. Find the **OPTION 1: Segoe UI** section (around line 30)
-3. **Comment out** OPTION 1
-4. **Uncomment** one of the 7 font options provided:
-   - **Segoe UI** (Windows default)
-   - **Inter** (Web-inspired, crisp)
-   - **Roboto** (Google Material Design)
-   - **SF Pro Text** (Apple-style)
-   - **Helvetica Neue** (Classic)
-   - **Poppins** (Modern & geometric)
-   - **JetBrains Mono** (Monospace for tech dashboards)
-5. Save and **rebuild** (fonts are set at application startup)
-
-**Example:**
-```cpp
-// Comment out:
-// QFont appFont("Segoe UI", 13);
-
-// Uncomment:
-QFont appFont("JetBrains Mono", 11);
-appFont.setStyleStrategy(QFont::PreferAntialias);
-app.setFont(appFont);
-```
-
----
-
-### 2️⃣ Change Window Size
-
-#### **File:** [`qml/Main.qml`](qml/Main.qml#L26-L50)
-
-**What to do:**
-1. Open [`qml/Main.qml`](qml/Main.qml)
-2. Find the **OPTION 1: Wide HD (1400x900)** section (around line 26)
-3. **Comment out** the current `width` and `height` lines
-4. **Uncomment** one of the 4 window size options:
-   - **Wide HD (1400x900)** — Default, spacious
-   - **Standard HD (1280x800)** — Balanced
-   - **Compact (1024x768)** — Smaller screens
-   - **Full HD (1600x950)** — Large desktop
-5. Save and run — changes apply instantly!
-
----
-
-### 3️⃣ Change Stat Card Data
-
-#### **File:** [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml#L32-L166)
-
-In the first `RowLayout`, you'll find 4 `StatCard` components. **Commented-out examples are provided** for different use cases.
-
-**What to do:**
-1. Open [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml)
-2. Find the **Stat Cards Row** section (around line 32)
-3. **Option A:** Directly edit the existing StatCard properties
-4. **Option B:** Comment out the entire `RowLayout` and uncomment one of these alternatives:
-   - **OPTION 2:** E-Commerce Dashboard (orders, products, return rate, satisfaction)
-   - **OPTION 3:** Server Monitoring (uptime, response time, error rate, connections)
-   - **OPTION 4:** Marketing Campaign (reach, CTR, leads, ROI)
-
-**StatCard properties:**
-```qml
-StatCard {
-    Layout.fillWidth: true
-    Layout.preferredHeight: 180
-    iconChar: "\u2603"          // Unicode character/emoji
-    title: "Total Users"        // Card label
-    value: "12,458"             // Main metric
-    change: "+12.5%"            // Change indicator
-    positive: true              // Green (true) or red (false)
-    accentColor: Theme.accentBlue
-}
-```
-
-**Icon characters you can use:**
-- `"\u2603"` ☃ Snowman
-- `"\u2605"` ★ Star
-- `"\u25CE"` ◎ Target
-- `"\u2713"` ✓ Checkmark
-- `"\u2717"` ✗ X Mark
-- `"\u2630"` ☰ Menu
-- `"\u2665"` ♥ Heart
-- `"\u25B2"` ▲ Up triangle
-- Or any emoji!
-
----
-
-### 4️⃣ Change Chart Data
-
-#### **File:** [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml#L168-L258)
-
-Charts are defined in the **Charts Row** section. **Commented alternatives show different data patterns**.
-
-**Line Chart (Performance Overview):**
-
-1. Open [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml)
-2. Find the `LineChartItem` component (around line 115)
-3. Replace the `dataPoints` array with your own values
-4. Update the `xLabels` array to match
-5. **Uncomment one of the 4 alternative patterns** to see examples:
-   - **OPTION 2:** Weekly Sales Pattern (7 days)
-   - **OPTION 3:** Server Traffic (24-hour)
-   - **OPTION 4:** Quarterly Revenue Growth
-
-**Example:**
-```qml
-LineChartItem {
-    anchors.fill: parent
-    // ... anchors ...
-    dataPoints: [120, 145, 160, 155, 180, 195, 210]
-    xLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    lineColor: Theme.accentGreen
-}
-```
-
-**Donut Chart (Category Breakdown):**
-
-1. Find the `DonutChartItem` component (around line 155)
-2. Replace the `slices` array with your own data
-3. **Uncomment one of the 4 alternative patterns**:
-   - **OPTION 2:** Traffic Sources (organic, direct, social, email, referral)
-   - **OPTION 3:** Server Resource Usage (CPU, memory, disk, network)
-   - **OPTION 4:** Customer Demographics (age groups)
-
-**Example:**
-```qml
-DonutChartItem {
-    anchors.fill: parent
-    // ... anchors ...
-    slices: [
-        { label: "Organic Search", value: 42, color: "#3498db" },
-        { label: "Direct",         value: 28, color: "#2ecc71" },
-        { label: "Social Media",   value: 18, color: "#f39c12" },
-        { label: "Email",          value: 8,  color: "#e74c3c" },
-        { label: "Referral",       value: 4,  color: "#9b59b6" }
-    ]
-}
-```
-
----
-
-### 5️⃣ Change Table Data
-
-#### **File:** [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml#L260-L395)
-
-The data table is in the **Recent Transactions Table** section. **Alternative datasets are commented out** for different use cases.
-
-**What to do:**
-1. Open [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml)
-2. Find the `DataTable` component (around line 185)
-3. **Option A:** Edit the existing `rows` array directly
-4. **Option B:** Comment out the entire `DataTable` and uncomment one of these:
-   - **OPTION 2:** E-Commerce Orders Table
-   - **OPTION 3:** Server Logs Table (event monitoring)
-   - **OPTION 4:** User Activity Log
-   - **OPTION 5:** Product Inventory
-
-**Row format:**
-```qml
-rows: [
-    { id: "#1001", name: "Alice Johnson", status: "Completed", amount: "$2,450.00", date: "2026-02-07" },
-    // ... more rows ...
-]
-```
-
-**Status colors** (automatic):
-- **"Completed"** → Green pill
-- **"Pending"** → Orange pill
-- **"Failed"** → Red pill
-
----
-
-### 6️⃣ Add a New Navigation Page
-
-#### **Files:** [`qml/pages/`](qml/pages/) + [`qml/Main.qml`](qml/Main.qml#L60-L85) + [`qml/components/Sidebar.qml`](qml/components/Sidebar.qml#L35-L42)
-
-**Steps:**
-
-1. **Create the QML page file:**
-   - Create `qml/pages/SettingsPage.qml`
-   - Use [`AnalyticsPage.qml`](qml/pages/AnalyticsPage.qml) as a template
-   - Define your page content
-
-2. **Add to the StackLayout:**
-   - Open [`qml/Main.qml`](qml/Main.qml)
-   - Find the `StackLayout` component (around line 60)
-   - Add your page: `SettingsPage {}`
-
-3. **Add navigation item:**
-   - Open [`qml/components/Sidebar.qml`](qml/components/Sidebar.qml)
-   - Find the `navModel` array (around line 35)
-   - Add: `{ icon: "\u2699", text: "Settings" }`
-
-4. **Add breadcrumb label:**
-   - Open [`qml/Main.qml`](qml/Main.qml)
-   - Find the `pageNames` array (around line 35)
-   - Add: `"Settings  /  Preferences"`
-
-**Example `SettingsPage.qml`:**
-```qml
-import QtQuick
-import QtQuick.Layouts
-
-Rectangle {
-    color: "transparent"
-    
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 30
-        
-        Text {
-            text: "Settings Page"
-            color: Theme.textPrimary
-            font.pixelSize: 24
-            font.bold: true
-        }
-        
-        // Your settings UI here
-    }
-}
-```
-
----
-
-### 7️⃣ Modify the Sidebar Navigation
-
-#### **File:** [`qml/components/Sidebar.qml`](qml/components/Sidebar.qml#L35-L42)
-
-**What to do:**
-1. Open [`qml/components/Sidebar.qml`](qml/components/Sidebar.qml)
-2. Find the `navModel` array (around line 35)
-3. Add, remove, or reorder navigation items
-4. Each item has an `icon` (Unicode character) and `text` (label)
-
-**Example:**
-```qml
-property var navModel: [
-    { icon: "\u25A0", text: "Dashboard" },
-    { icon: "\u25B2", text: "Analytics" },
-    { icon: "\u2605", text: "Favorites" },    // NEW
-    { icon: "\u2630", text: "Reports" },
-    { icon: "\u2699", text: "Settings" }      // NEW
-]
-```
-
-**Remember:** Update [`qml/Main.qml`](qml/Main.qml) to add corresponding pages and breadcrumb labels!
-
----
-
-## 🏗️ Architecture Notes
-
-### QML vs Widgets: Why QML for Dashboards?
-
-This QML version differs from the Widgets version:
-- ✅ **Declarative UI** — Define what you want, not how to build it
-- ✅ **Live reload** — Changes appear instantly without rebuild (Qt Creator)
-- ✅ **Modern animations** — Built-in property animations
-- ✅ **Touch-friendly** — Great for tablets and touch displays
-- ✅ **Separation of concerns** — UI in QML, logic in C++
-
-### Key Qt Quick Concepts Demonstrated
-
-- **QML Singletons:** `Theme.qml` provides global color access
-- **Layouts:** `RowLayout`, `ColumnLayout` for responsive design
-- **Canvas API:** 2D drawing in `StatCard.qml`
-- **QQuickPaintedItem:** C++ custom painting exposed to QML (charts)
-- **Signal handling:** `onNavigationChanged` for page switching
-- **Property bindings:** Automatic UI updates when data changes
-- **ListModel:** Dynamic data for tables and lists
-
-### C++ and QML Integration
-
-- **`main.cpp`:** Sets up the QML engine and registers C++ types
-- **`linechartitem.cpp`:** C++ chart rendered with QPainter, used in QML
-- **`donutchartitem.cpp`:** C++ donut chart exposed to QML
-- **`Theme.qml`:** QML singleton for centralized styling
-
----
-
-## 📝 Troubleshooting
-
-### "Qt not found" during CMake configuration
-
-**Solution:** Set the `CMAKE_PREFIX_PATH` environment variable to your Qt installation:
-```bash
-# Windows (PowerShell)
-$env:CMAKE_PREFIX_PATH = "C:\Qt\6.10.1\mingw_64"
-
-# Linux/macOS
-export CMAKE_PREFIX_PATH=/home/user/Qt/6.10.1/gcc_64
-```
-
-### Theme changes not appearing
-
-**Solution:** Make sure you **uncommented the entire theme block** and commented out all other themes. Only ONE theme should be active at a time in [`qml/Theme.qml`](qml/Theme.qml).
-
-### Fonts look different than expected
-
-**Solution:** 
-1. Check that the font is installed on your system
-2. Use `QFontDatabase::families()` to list available fonts
-3. Rebuild after changing [`src/main.cpp`](src/main.cpp)
-
-### Charts not rendering
-
-**Solution:**
-- Ensure `dataPoints` array has at least 2 values
-- Check that all colors are valid hex codes (e.g., `"#3498db"`)
-- For donut charts, ensure slice values sum to a positive number
-
-### QML warnings about "Cannot assign to non-existent property"
-
-**Solution:** Check that all property names match exactly (case-sensitive). Common mistakes:
-- `accentColor` vs `accentcolor`
-- `dataPoints` vs `datapoints`
-
----
-
-## 🎓 Learning Path
-
-If you're new to Qt Quick/QML, explore the code in this order:
-
-1. **Start here:** [`qml/Main.qml`](qml/Main.qml) — Window structure and layout
-2. **Then:** [`qml/Theme.qml`](qml/Theme.qml) — Singleton pattern for global properties
-3. **Simple component:** [`qml/components/TopBar.qml`](qml/components/TopBar.qml) — Basic QML component
-4. **Canvas rendering:** [`qml/components/StatCard.qml`](qml/components/StatCard.qml) — 2D drawing API
-5. **C++ integration:** [`src/chartmodels/linechartitem.cpp`](src/chartmodels/linechartitem.cpp) — QPainter in QML
-6. **Complex page:** [`qml/pages/DashboardPage.qml`](qml/pages/DashboardPage.qml) — Combining components
-
-Each file has **extensive comments** explaining QML concepts and best practices.
-
----
-
-## 🔄 QML Live Reload (Qt Creator)
-
-One of QML's best features is **instant reload**! In Qt Creator:
-
-1. Run your app normally
-2. Edit any `.qml` file (colors, text, layout)
-3. **Save the file** (Ctrl+S)
-4. Changes appear **instantly** in the running app — no rebuild!
-
-**Note:** Changes to C++ files (`.cpp`, `.h`) still require a rebuild.
-
----
-
-## 📊 Customization Comparison
-
-| Feature | QML Project | Widgets Project |
-|---------|-------------|-----------------|
-| **Theme switching** | Edit `Theme.qml` (instant) | Edit `.qss` + rebuild |
-| **Font changes** | Edit `main.cpp` + rebuild | Edit `main.cpp` + rebuild |
-| **Window size** | Edit `Main.qml` (instant) | Edit `mainwindow.cpp` + rebuild |
-| **Card/Chart data** | Edit `DashboardPage.qml` (instant) | Edit `mainwindow.cpp` + rebuild |
-| **Add pages** | Create `.qml` file (instant) | Create `.cpp/.h` + rebuild |
-| **Live reload** | ✅ Yes (Qt Creator) | ❌ No |
-
-**Winner for rapid prototyping:** QML! Make changes and see them instantly.
-
----
-
-## 📄 License
-
-MIT — Free to use in personal and commercial projects.
-
----
-
-## 🔗 Related Projects
-
-- **C++ Widgets version:** [`qt-widgets-cpp/`](../qt-widgets-cpp/) — Traditional Qt Widgets
-- **PySide6 version:** [`qt-widgets-pyside/`](../qt-widgets-pyside/) — Python port with identical UI
-
----
-
-**Happy coding! 🚀** If you make something cool with this template, feel free to share it!
+**Maintainer:** mbr
