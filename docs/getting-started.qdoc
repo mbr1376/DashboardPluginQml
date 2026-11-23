@@ -1,0 +1,65 @@
+/*!
+    \page getting-started.html
+    \title Getting Started
+    \brief Build Qt DynamicDashboard and embed it in a Qt Quick application.
+
+    \section1 Build Requirements
+
+    * CMake 3.21 or newer.
+    * Qt 6.8 or newer for the library.
+    * Qt 6.10 or newer to build all current examples.
+    * A C++17 compatible compiler.
+
+    \section1 Configure and Build
+
+    Clone the repository:
+
+    \badcode
+    git clone https://github.com/mbr1376/DashboardPluginQml.git
+    cd DashboardPluginQml
+    \endcode
+
+    Set the path to the Qt installation. Adjust the path for your system:
+
+    \badcode
+    export CMAKE_PREFIX_PATH="$HOME/Qt/6.10.1/gcc_64"
+    \endcode
+
+    Configure and build the project:
+
+    \badcode
+    cmake -S . -B build \\
+      -DCMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH" \\
+      -DBUILD_EXAMPLES=ON
+
+    cmake --build build --parallel
+    \endcode
+
+    To build only the library, configure with \c BUILD_EXAMPLES set to \c OFF.
+
+    \section1 Use DashboardView
+
+    Import the Dashboard module and place \l DashboardView in the application's
+    QML scene:
+
+    \qml
+    import QtQuick
+    import Dashboard
+
+    Window {
+        visible: true
+        width: 1400
+        height: 900
+
+        DashboardView {
+            anchors.fill: parent
+        }
+    }
+    \endqml
+
+    \section1 Load Data
+
+    \l DashboardView provides methods for supplying data directly, parsing
+    JSON or CSV text, loading a local file, and retrieving JSON from a REST
+    endpoint. See \l {data-handling.html}{Data Handling} for details.
+*/

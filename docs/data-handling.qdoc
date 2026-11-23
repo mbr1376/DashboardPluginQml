@@ -1,0 +1,57 @@
+/*!
+    \page data-handling.html
+    \title Data Handling
+    \brief Supply records to DashboardView using supported data formats.
+
+    Dashboard data is represented as a list of objects. Each object describes
+    one record, and its keys become field names available to dashboard widgets.
+
+    \section1 Set Data Directly
+
+    Use \c setData() with a JavaScript array of objects:
+
+    \qml
+    DashboardView {
+        id: dashboard
+
+        Component.onCompleted: {
+            dashboard.setData([
+                { category: "Online", sales: 240, orders: 120 },
+                { category: "Retail", sales: 185, orders: 94 }
+            ])
+        }
+    }
+    \endqml
+
+    \section1 JSON
+
+    \c loadJson() accepts a JSON array of objects or a JSON object containing
+    a \c data or \c rows array. Each row must be a JSON object.
+
+    \section1 CSV
+
+    \c loadCsv() accepts CSV text with a header row. The following rows are
+    interpreted as records. Quoted CSV fields are supported by the data source.
+
+    \section1 Local Files
+
+    \c loadFile() loads a local JSON or CSV file using a URL.
+
+    \section1 REST Endpoints
+
+    \c loadRest() retrieves JSON from an HTTP or HTTPS endpoint. The optional
+    second argument is a Bearer token. The response must have the same accepted
+    JSON structure as \c loadJson().
+
+    \section1 C++ Models
+
+    Set the \c dataModel property to a Qt item model, or call
+    \c setDataModel() with a model object. The model's role names are used as
+    dashboard field names.
+
+    \section1 Errors and Loading State
+
+    \c loading indicates whether a remote request is in progress.
+    \c dataLoadFailed(message) is emitted when the data source reports an
+    error. The underlying \l DashboardDataSource also exposes \c errorMessage.
+*/

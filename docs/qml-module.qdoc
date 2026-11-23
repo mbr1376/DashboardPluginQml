@@ -1,0 +1,104 @@
+/*!
+    \qmlmodule Dashboard 1.0
+    \title Dashboard QML Module
+
+    The Dashboard module provides the embeddable dashboard view and supporting
+    QML components. Import the module with:
+
+    \qml
+    import Dashboard
+    \endqml
+
+    \section1 Main QML Types
+
+    \list
+        \li \l DashboardView - Main embeddable dashboard component.
+        \li \l DashboardBuilder - Dashboard layout and widget editor.
+        \li \l DashboardWidget - Individual dashboard widget.
+        \li \l DashboardChart - Chart presentation component.
+        \li \l Theme - Application-wide theme singleton.
+        \li \l DashboardDataModel - C++ list model exposed to QML.
+        \li \l DashboardDataSource - Data loading and model adapter.
+        \li \l ReportEngine - Report analysis and generation.
+        \li \l UserModel - SQL-backed user list model.
+        \li \l DatabaseConfig - Database path configuration.
+        \li \l LineChartItem - Painted line chart item.
+        \li \l DonutChartItem - Painted donut chart item.
+    \endlist
+*/
+
+/*!
+    \qmltype DashboardDataModel
+    \nativetype DashboardDataModel
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief A list model that stores dashboard records.
+
+    DashboardDataModel exposes a list of map-like records to QML. Each record
+    is represented by a \c QVariantMap. The model can be populated, appended,
+    updated, removed, or cleared from C++ or QML.
+*/
+
+/*!
+    \qmltype DashboardDataSource
+    \nativetype DashboardDataSource
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Loads and adapts dashboard data.
+
+    DashboardDataSource exposes the current rows, loading state, and the most
+    recent error message. It accepts row lists, Qt item models, JSON, CSV,
+    local files, and remote URLs.
+*/
+
+/*!
+    \qmltype ReportEngine
+    \nativetype ReportEngine
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Analyzes records and generates grouped reports.
+
+    ReportEngine detects field types, applies filters, groups records, and
+    calculates aggregations for a selected metric.
+*/
+
+/*!
+    \qmltype LineChartItem
+    \nativetype LineChartItem
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Draws a line chart using QPainter.
+
+    Set \c dataPoints, optional \c xLabels, and \c lineColor to configure the
+    chart.
+*/
+
+/*!
+    \qmltype DonutChartItem
+    \nativetype DonutChartItem
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Draws a donut chart from labeled slices.
+
+    Each slice is a map with \c label, \c value, and \c color entries.
+*/
+
+
+/*!
+    \qmltype UserModel
+    \nativetype UserModel
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief A SQL-backed list model for user records.
+
+    UserModel exposes user records through model roles and supports opening a
+    database, reloading records, adding users, and removing users.
+*/
+
+/*!
+    \qmltype DatabaseConfig
+    \nativetype DatabaseConfig
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Stores a database path for QML application components.
+*/

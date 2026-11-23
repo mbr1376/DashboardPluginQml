@@ -1,0 +1,41 @@
+/****************************************************************************
+** Qt DynamicDashboard documentation
+****************************************************************************/
+
+/*!
+    \page index.html
+    \title Qt DynamicDashboard
+
+    \brief A reusable, data-driven dashboard library for Qt Quick and QML.
+
+    Qt DynamicDashboard provides an embeddable dashboard interface, QML
+    components, C++ data models, data loading helpers, chart items, and report
+    generation facilities for Qt Quick applications.
+
+    The QML module URI is \c Dashboard and the module version is \c 1.0.
+
+    \section1 Documentation
+
+    \list
+        \li \l {getting-started.html}{Getting Started}
+        \li \l {qml-module.html}{Dashboard QML Module}
+        \li \l {cpp-api.html}{C++ API}
+        \li \l {data-handling.html}{Data Handling}
+        \li \l {reporting.html}{Reporting}
+        \li \l {examples.html}{Example Applications}
+    \endlist
+
+    \section1 Requirements
+
+    The library requires Qt 6.8 or newer, CMake 3.21 or newer, and a C++17
+    capable compiler. Building all example applications currently requires
+    Qt 6.10 or newer.
+
+    The library uses Qt Core, Qml, Quick, Quick Controls 2, Quick Dialogs 2,
+    Network, and Sql.
+
+    \section1 Source Code
+
+    The source code is available at
+    \l{https://github.com/mbr1376/DashboardPluginQml}{GitHub}.
+*/

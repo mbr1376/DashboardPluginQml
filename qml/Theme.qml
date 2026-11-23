@@ -2,6 +2,16 @@
 pragma Singleton
 import QtQuick
 
+/*!
+    \qmlsingletontype Theme
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Provides shared dashboard colors and theme selection.
+
+    Theme is a QML singleton that exposes the active palette and supports
+    registering and selecting custom themes.
+*/
+
 QtObject {
     id: themeManager
 

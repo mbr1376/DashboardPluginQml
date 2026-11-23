@@ -1,0 +1,19 @@
+# QDoc configuration for Qt DynamicDashboard.
+# Run from the build tree through the DashboardDocumentation CMake target.
+
+project                 = QtDynamicDashboard
+description             = Qt DynamicDashboard API and Developer Documentation
+url                     = https://github.com/mbr1376/DashboardPluginQml
+version                 = 1.0
+productname             = Qt DynamicDashboard
+
+outputformats           = HTML
+
+headers.fileextensions  = "*.h"
+sources.fileextensions  = "*.cpp *.qml *.qdoc"
+
+headerdirs              = ../src
+sourcedirs              = ../src ../qml .
+
+# QDoc uses Clang to parse C++ declarations. Add the Qt installation's
+# include directories through the QDoc command line or environment as needed.

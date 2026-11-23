@@ -1,0 +1,33 @@
+/*!
+    \page reporting.html
+    \title Reporting and Analysis
+    \brief Analyze dashboard records with ReportEngine.
+
+    ReportEngine inspects the supplied rows and classifies fields as numeric,
+    date, Boolean, or text. It can filter records and generate grouped report
+    rows using an aggregation.
+
+    \section1 Basic Workflow
+
+    1. Assign records to the \c rows property.
+    2. Call \c analyze() to inspect available fields.
+    3. Configure \c groupField, \c metricField, and \c aggregation.
+    4. Add filters with \c setFilter().
+    5. Call \c generateReport().
+    6. Handle the \c reportGenerated(report) signal.
+
+    \section1 Aggregations
+
+    The reporting UI offers sum, average, count, minimum, and maximum
+    aggregations. The selected aggregation is applied to the configured metric
+    field for each group.
+
+    \section1 Filters
+
+    Use \c setFilter(field, operation, value, value2) to add or replace a
+    filter for a field. Use \c removeFilter(field) to remove one filter, or
+    \c clearFilters() to remove all filters.
+
+    The exact supported operations are implemented in ReportEngine and should
+    be checked against the current source when extending the reporting UI.
+*/

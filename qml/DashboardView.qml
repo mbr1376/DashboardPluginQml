@@ -6,14 +6,30 @@
 import QtQuick
 import QtQuick.Layouts
 
+/*!
+    \qmltype DashboardView
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief The main embeddable dashboard component.
+
+    DashboardView displays dashboard pages and provides the public API for
+    supplying data, loading JSON and CSV, retrieving REST data, and managing
+    the dashboard layout.
+*/
+
 Item {
     id: root
 
     implicitWidth: 1400
     implicitHeight: 900
 
+    /*! The optional Qt item model used as the dashboard data source. */
     property var dataModel: null
+
+    /*! Whether the data source is currently loading remote data. */
     readonly property bool loading: dataSource.loading
+
+    /*! The current dashboard widget layout. */
     property var dashboardLayout: [
         { id: "sales-line", title: "Sales by category", type: "line",
           x: 0, y: 0, w: 6, h: 3, xField: "category", yField: "sales" },
@@ -32,18 +48,26 @@ Item {
         "Users  /  Management"
     ]
 
+    /*! The records currently displayed by the dashboard. */
     readonly property var dataRows: dataSource.rows
 
+    /*! Emitted when the dashboard layout changes. */
     signal layoutChanged(var layout)
+    /*! Emitted when the application should persist the current layout. */
     signal saveLayoutRequested(var layout)
+    /*! Emitted when a data-loading operation fails. */
     signal dataLoadFailed(string message)
+    /*! Emitted when the reporting page generates a report. */
     signal reportGenerated(var report)
+    /*! Emitted when the application is asked to export report data as CSV. */
     signal reportExportRequested(string fileName, string csv)
 
+    /*! Replaces the current dashboard records. Returns whether the rows were accepted. */
     function setData(rows) {
         return dataSource.setRows(rows);
     }
 
+    /*! Sets the Qt item model used as the dashboard data source. */
     function setDataModel(model) {
         if (dataModel === model)
             return dataSource.setSource(model);
@@ -51,22 +75,27 @@ Item {
         return true;
     }
 
+    /*! Loads records from a JSON string. */
     function loadJson(json) {
         return dataSource.loadJson(json);
     }
 
+    /*! Loads records from CSV text with a header row. */
     function loadCsv(csv) {
         return dataSource.loadCsv(csv);
     }
 
+    /*! Loads a local JSON or CSV file. */
     function loadFile(url) {
         return dataSource.loadFile(url);
     }
 
+    /*! Loads JSON from an HTTP or HTTPS endpoint, optionally using a Bearer token. */
     function loadRest(url, bearerToken) {
         return dataSource.loadUrl(url, bearerToken || "");
     }
 
+    /*! Applies a dashboard layout and returns whether it was accepted. */
     function setLayout(layout) {
         if (!builder)
             return false;

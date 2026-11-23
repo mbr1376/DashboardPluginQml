@@ -4,6 +4,16 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
+/*!
+    \qmltype DashboardBuilder
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Provides dashboard layout editing and widget management.
+
+    DashboardBuilder manages dashboard widget placement, editing gestures,
+    and layout serialization.
+*/
+
 Item {
     id: root
 

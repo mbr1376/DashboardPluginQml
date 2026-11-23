@@ -1,0 +1,32 @@
+/*!
+    \page examples.html
+    \title Example Applications
+    \brief Explore the example applications included with the repository.
+
+    The repository contains three Qt Quick applications:
+
+    \section1 BasicApp
+
+    Located in \c examples/BasicApp, this example demonstrates embedding
+    DashboardView, providing a C++ data model, registering a custom theme, and
+    saving layout state with QSettings.
+
+    \section1 JsonApp
+
+    Located in \c examples/JsonApp, this example demonstrates loading JSON
+    data into the dashboard through the QML API.
+
+    \section1 RestApiApp
+
+    Located in \c examples/RestApiApp, this example demonstrates retrieving
+    JSON data from a REST endpoint and optionally supplying a Bearer token.
+
+    \section1 Build All Examples
+
+    Configure with \c BUILD_EXAMPLES enabled and use Qt 6.10 or newer:
+
+    \badcode
+    cmake -S . -B build -DBUILD_EXAMPLES=ON
+    cmake --build build --parallel
+    \endcode
+*/

@@ -28,6 +28,7 @@ if(COMMAND qt_policy)
 endif()
 
 option(BUILD_EXAMPLES "Build example applications" ON)
+option(BUILD_DOCUMENTATION "Build API documentation with QDoc" OFF)
 
 add_subdirectory(src)
 
@@ -35,6 +36,10 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples/BasicApp)
     add_subdirectory(examples/JsonApp)
     add_subdirectory(examples/RestApiApp)
+endif()
+
+if(BUILD_DOCUMENTATION)
+    add_subdirectory(docs)
 endif()
 
 # QML import path for build-tree examples

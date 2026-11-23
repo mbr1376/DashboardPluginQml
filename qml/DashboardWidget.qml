@@ -3,6 +3,16 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+/*!
+    \qmltype DashboardWidget
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Displays an individual dashboard widget.
+
+    DashboardWidget presents a configured chart or table and exposes signals
+    for editing, removing, dragging, and resizing the widget.
+*/
+
 Rectangle {
     id: root
 

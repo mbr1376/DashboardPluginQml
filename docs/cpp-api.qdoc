@@ -1,0 +1,325 @@
+/*!
+    \page cpp-api.html
+    \title C++ API
+    \brief Overview of the C++ classes provided by Qt DynamicDashboard.
+
+    The public C++ API is implemented with Qt classes and is also exposed to
+    QML where the class is registered as a QML element.
+
+    \section1 Data Model
+
+    \l DashboardDataModel derives from \c QAbstractListModel and stores rows
+    as \c QVariantMap values. It provides row insertion, update, removal, and
+    reset operations.
+
+    \section1 Data Source
+
+    \l DashboardDataSource manages dashboard rows and can adapt a Qt item model
+    or load data from JSON, CSV, a local file, or a remote URL.
+
+    \section1 Reporting
+
+    \l ReportEngine analyzes the fields in a record set, applies filters, and
+    creates grouped report rows using a selected aggregation.
+
+    \section1 Additional Classes
+
+    * \c UserModel - SQL-backed user list model used by the user-management UI.
+    * \c DatabaseConfig - QML-visible database path configuration object.
+    * \c DashboardRuntime - application runtime initialization helper.
+    * \l LineChartItem and \l DonutChartItem - custom painted chart items.
+*/
+
+/*!
+    \class DashboardDataModel
+    \brief A list model for dashboard records.
+
+    Each row is a \c QVariantMap. Role names are derived from the keys in the
+    supplied records. The model is registered as a QML element in the
+    \c Dashboard module.
+*/
+
+/*!
+    \class DashboardDataSource
+    \brief Provides data loading and model adaptation for dashboards.
+
+    The data source stores rows as a \c QVariantList and exposes its loading
+    state and error message. Remote URL loading is asynchronous.
+*/
+
+/*!
+    \class ReportEngine
+    \brief Analyzes tabular records and generates reports.
+
+    Field categories are exposed through the \c fields, \c numericFields,
+    \c dateFields, \c booleanFields, and \c textFields properties.
+*/
+
+/*!
+    \class UserModel
+    \brief A SQL-backed list model for user records.
+
+    UserModel exposes user records through Qt item model roles and supports
+    opening a database, reloading records, adding users, and removing users.
+*/
+
+/*!
+    \class DatabaseConfig
+    \brief Stores the database path exposed to QML.
+*/
+
+/*!
+    \class DashboardRuntime
+    \brief Initializes application-side dashboard runtime services.
+
+    \note DashboardRuntime is an application integration helper and is not
+    registered as a QML element.
+*/
+
+/*!
+    \class LineChartItem
+    \brief A painted line chart item for Qt Quick.
+
+    The item renders numeric data points, optional x-axis labels, and a line
+    color using QPainter.
+*/
+
+/*!
+    \class DonutChartItem
+    \brief A painted donut chart item for Qt Quick.
+
+    The item renders labeled slices and supports adjusting the inner hole ratio.
+*/
+
+
+/*!
+    \property DashboardDataModel::count
+    \brief The number of records in the model.
+*/
+
+/*!
+    \property DashboardDataModel::rows
+    \brief The complete list of records stored by the model.
+*/
+
+/*!
+    \fn QVariantMap DashboardDataModel::rowAt(int row) const
+    Returns the record at \a row. An empty map is returned when the index is
+    outside the model's valid range.
+*/
+
+/*!
+    \fn bool DashboardDataModel::setRows(const QVariantList &rows)
+    Replaces all records with \a rows. Each entry must be a map-like record.
+    Returns \c true if the supplied records are accepted.
+*/
+
+/*!
+    \fn int DashboardDataModel::appendRow(const QVariantMap &row)
+    Appends \a row and returns the new row index, or a negative value if the
+    record cannot be added.
+*/
+
+/*!
+    \fn bool DashboardDataModel::updateRow(int row, const QVariantMap &values)
+    Updates the record at \a row with the values in \a values.
+*/
+
+/*!
+    \fn bool DashboardDataModel::removeRow(int row)
+    Removes the record at \a row.
+*/
+
+/*!
+    \fn void DashboardDataModel::clear()
+    Removes all records from the model.
+*/
+
+/*!
+    \property DashboardDataSource::rows
+    \brief The records currently held by the data source.
+*/
+
+/*!
+    \property DashboardDataSource::errorMessage
+    \brief The most recent data-loading error message, or an empty string.
+*/
+
+/*!
+    \property DashboardDataSource::loading
+    \brief Whether a remote data request is in progress.
+*/
+
+/*!
+    \fn bool DashboardDataSource::setRows(const QVariantList &rows)
+    Replaces the current records with \a rows.
+*/
+
+/*!
+    \fn bool DashboardDataSource::setSource(QObject *source)
+    Uses \a source as the source Qt item model and observes its model changes.
+*/
+
+/*!
+    \fn bool DashboardDataSource::loadJson(const QString &json)
+    Parses \a json and replaces the current records when the input has a
+    supported JSON structure.
+*/
+
+/*!
+    \fn bool DashboardDataSource::loadCsv(const QString &csv)
+    Parses \a csv text with a header row and replaces the current records.
+*/
+
+/*!
+    \fn bool DashboardDataSource::loadFile(const QUrl &url)
+    Loads a local JSON or CSV file identified by \a url.
+*/
+
+/*!
+    \fn bool DashboardDataSource::loadUrl(const QUrl &url, const QString &bearerToken)
+    Starts an asynchronous request to \a url. If \a bearerToken is not empty,
+    it is sent as a Bearer authorization token.
+*/
+
+/*!
+    \property ReportEngine::rows
+    \brief The source records to analyze and report on.
+*/
+
+/*!
+    \property ReportEngine::fields
+    \brief The names of all detected fields.
+*/
+
+/*!
+    \property ReportEngine::numericFields
+    \brief The fields detected as numeric.
+*/
+
+/*!
+    \property ReportEngine::dateFields
+    \brief The fields detected as date or date-time values.
+*/
+
+/*!
+    \property ReportEngine::booleanFields
+    \brief The fields detected as Boolean values.
+*/
+
+/*!
+    \property ReportEngine::textFields
+    \brief The fields detected as text values.
+*/
+
+/*!
+    \property ReportEngine::filters
+    \brief The active report filters.
+*/
+
+/*!
+    \property ReportEngine::reportRows
+    \brief The rows produced by the most recently generated report.
+*/
+
+/*!
+    \property ReportEngine::groupField
+    \brief The field used to group records.
+*/
+
+/*!
+    \property ReportEngine::metricField
+    \brief The numeric field used by the selected aggregation.
+*/
+
+/*!
+    \property ReportEngine::aggregation
+    \brief The aggregation applied to the metric field.
+*/
+
+/*!
+    \fn void ReportEngine::analyze()
+    Analyzes the source rows and updates the detected field lists.
+*/
+
+/*!
+    \fn void ReportEngine::generateReport()
+    Generates report rows using the current grouping, metric, aggregation,
+    and filter configuration.
+*/
+
+/*!
+    \fn void ReportEngine::setFilter(const QString &field, const QString &operation, const QVariant &value, const QVariant &value2)
+    Adds or replaces a filter for \a field. The operation and values define
+    the comparison applied to each record.
+*/
+
+/*!
+    \fn void ReportEngine::removeFilter(const QString &field)
+    Removes the active filter for \a field.
+*/
+
+/*!
+    \fn void ReportEngine::clearFilters()
+    Removes all active filters.
+*/
+
+/*!
+    \property LineChartItem::dataPoints
+    \brief The numeric values displayed by the line chart.
+*/
+
+/*!
+    \property LineChartItem::xLabels
+    \brief The labels displayed along the horizontal axis.
+*/
+
+/*!
+    \property LineChartItem::lineColor
+    \brief The color used to draw the chart line and data points.
+*/
+
+/*!
+    \property DonutChartItem::slices
+    \brief The slice records displayed by the donut chart.
+
+    Each slice is a map containing \c label, \c value, and \c color entries.
+*/
+
+/*!
+    \property DonutChartItem::holeRatio
+    \brief The relative size of the donut's inner hole.
+
+    The value is clamped by the implementation to its supported range.
+*/
+
+
+/*!
+    \property UserModel::count
+    \brief The number of user records currently loaded.
+*/
+
+/*!
+    \fn bool UserModel::openDatabase(const QString &databasePath)
+    Opens the database at \a databasePath and prepares the model for queries.
+*/
+
+/*!
+    \fn bool UserModel::reload()
+    Reloads user records from the currently opened database.
+*/
+
+/*!
+    \fn bool UserModel::addUser(const QString &name, const QString &email, const QString &role, const QString &status)
+    Adds a user with the supplied \a name, \a email, \a role, and \a status.
+*/
+
+/*!
+    \fn bool UserModel::removeUser(int id)
+    Removes the user with the specified database \a id.
+*/
+
+/*!
+    \property DatabaseConfig::databasePath
+    \brief The database file path configured for the application.
+*/

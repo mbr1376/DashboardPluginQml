@@ -1,5 +1,15 @@
 import QtQuick
 
+/*!
+    \qmltype DashboardChart
+    \inqmlmodule Dashboard
+    \since 1.0
+    \brief Renders chart data for a dashboard widget.
+
+    DashboardChart receives records and a widget configuration and draws the
+    corresponding chart presentation.
+*/
+
 Item {
     id: root
 
